@@ -41,4 +41,13 @@ class Button
       strokeColour = 0;
     }
   }
+
+  public boolean buttonPressed()
+  {
+      if(mouseX > btnX && mouseX < btnX + btnW && mouseY > btnY && mouseY < btnY + btnH && mousePressed)
+      {
+        return true;
+      }
+      else return false;
+  }
 }

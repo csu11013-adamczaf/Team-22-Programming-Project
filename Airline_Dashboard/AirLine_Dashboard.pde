@@ -10,7 +10,7 @@ Button nextButton;
   
 void setup()
 {
-  flights = new TableWidget(30, 75, "flights-short.csv");
+  flights = new TableWidget(30, 75, "flights2k.csv");
   prevButton = new Button(btnW, btnH, prevX, prevY);
   nextButton = new Button(btnW, btnH, nextX, nextY);
   size(1920,1080);
@@ -28,12 +28,12 @@ void draw()
 
 void mousePressed()
 {
-  if (mouseX > nextX && mouseX < nextX + btnW && mouseY > nextY && mouseY < nextY + btnH)
+  if (nextButton.buttonPressed())
   {
     flights.pageNumber++;
   }
   
-  if (mouseX > prevX && mouseX < prevX + btnW && mouseY > prevY && mouseY < prevY + btnH)
+  if (prevButton.buttonPressed())
   {
     if (flights.pageNumber > 0)
     {
