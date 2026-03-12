@@ -24,6 +24,7 @@ class TableWidget
     public void printWidget(int numberOfFlightsToDisplay)
     {
         fill(#F5F5DC);
+        stroke(0);
         rect(xPos-TABLE_PADDING, yPos-HEADER_HEIGHT-TABLE_PADDING, tableWidth+TABLE_PADDING, numberOfFlightsToDisplay*ROW_HEIGHT+HEADER_HEIGHT+TABLE_PADDING, 10);
         printHeader();
         printFlights(numberOfFlightsToDisplay);
@@ -43,7 +44,6 @@ class TableWidget
     private void printFlights(int numberOfResults)
    {
     textFont(tableFont);
-    fill(0);
     int maxPageNumber = flightData.getRowCount()/numberOfResults;
     
     int relativeRow = 0;
