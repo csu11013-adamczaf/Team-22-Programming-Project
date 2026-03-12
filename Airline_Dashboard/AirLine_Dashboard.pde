@@ -4,12 +4,15 @@ int nextX = 150;
 int nextY = 400;
 int prevX = 50;
 int prevY = 400;
-boolean userMouse = false;
 TableWidget flights;
+Button prevButton;
+Button nextButton;
   
 void setup()
 {
   flights = new TableWidget(30, 75, "flights-short.csv");
+  prevButton = new Button(btnW, btnH, prevX, prevY);
+  nextButton = new Button(btnW, btnH, nextX, nextY);
   size(1920,1080);
   background(#ffffff);
 }
@@ -19,17 +22,8 @@ void draw()
   background(#ffffff);
 
   flights.printWidget(10);
-
-  fill(200);
-  rect(prevX, prevY, btnW, btnH);
-  fill(0);
-  text("Prev", prevX + 20, prevY + 20);
-
-  fill(200);
-  rect(nextX, nextY, btnW, btnH);
-  fill(0);
-  text("Next", nextX + 20, nextY + 20);
-  
+  prevButton.printButton("Prev", 200, 0);
+  nextButton.printButton("Next", 200, 0);
 }
 
 void mousePressed()
