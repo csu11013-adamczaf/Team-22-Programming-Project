@@ -10,7 +10,7 @@ Button nextButton;
   
 void setup()
 {
-  flights = new TableWidget(30, 75, "flights2k.csv");
+  flights = new TableWidget(30, 75, "flights-short.csv");
   prevButton = new Button(btnW, btnH, prevX, prevY);
   nextButton = new Button(btnW, btnH, nextX, nextY);
   size(1920,1080);

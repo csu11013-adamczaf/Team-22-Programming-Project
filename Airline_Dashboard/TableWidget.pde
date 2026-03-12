@@ -44,21 +44,22 @@ class TableWidget
     private void printFlights(int numberOfResults)
    {
     textFont(tableFont);
-    int maxPageNumber = flightData.getRowCount()/numberOfResults;
     
     int relativeRow = 0;
-    for(int row = (pageNumber*numberOfResults == 0 ? 1 : pageNumber*numberOfResults); row < (pageNumber+1)*numberOfResults; row++)
+    for(int row = (pageNumber == 0 ? 1 : pageNumber*numberOfResults+1); row <= (pageNumber+1)*numberOfResults; row++)
     {
-        if(pageNumber >= maxPageNumber)
+        if(row >= flightData.getRowCount())
         {
             pageNumber = 0;
         }
-        for(int column = 0; column < flightData.getColumnCount(); column++)
-        {
-            text(flightData.getString(row,column),((getColumnOffset(column))+xPos),((relativeRow*ROW_HEIGHT)+yPos+15));
+        else{
+            for(int column = 0; column < flightData.getColumnCount(); column++)
+            {
+                text(flightData.getString(row,column),((getColumnOffset(column))+xPos),((relativeRow*ROW_HEIGHT)+yPos+15));
+            }
+            rect(xPos-TABLE_PADDING, relativeRow*ROW_HEIGHT+yPos-5, tableWidth+TABLE_PADDING, ROW_DIVIDER_HEIGHT);
+            relativeRow++;
         }
-        rect(xPos-TABLE_PADDING, relativeRow*ROW_HEIGHT+yPos-5, tableWidth+TABLE_PADDING, ROW_DIVIDER_HEIGHT);
-        relativeRow++;
     }
 
    }
