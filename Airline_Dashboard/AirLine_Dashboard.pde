@@ -3,7 +3,7 @@
   
   void setup()
   {
-    flights = new TableWidget(30, 30, "flights100k.csv");
+    flights = new TableWidget(15, 75, "flights2k.csv");
     size(1920,1080);
     background(#ffffff);
   }
@@ -14,7 +14,7 @@
     {
       if(!userMouse)
       {
-        flights.printFlights(10);
+        flights.printWidget(10);
         flights.pageNumber++;
         userMouse = true;
       }
