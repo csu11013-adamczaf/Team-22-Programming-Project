@@ -1,5 +1,5 @@
 final int TABLE_PADDING = 10;
-final int ROW_HEIGHT = 40;
+final int ROW_HEIGHT = 30;
 final float ROW_DIVIDER_HEIGHT = 0.5;
 final int HEADER_HEIGHT = 40;
 float tableWidth;
@@ -17,7 +17,7 @@ class TableWidget
         this.xPos = xPos;
         this.yPos = yPos;
         this.flightData = loadTable(flightData);
-        this.tableFont = loadFont("ArialMT-15.vlw");
+        this.tableFont = loadFont("ArialMT-10.vlw");
         tableWidth = getColumnOffset(18);
     }
 
@@ -50,7 +50,7 @@ class TableWidget
     {
         for(int column = 0; column < flightData.getColumnCount(); column++)
         {
-            text(flightData.getString(row,column),((getColumnOffset(column))+xPos),((relativeRow*ROW_HEIGHT)+yPos+20));
+            text(flightData.getString(row,column),((getColumnOffset(column))+xPos),((relativeRow*ROW_HEIGHT)+yPos+15));
         }
         rect(xPos-TABLE_PADDING, relativeRow*ROW_HEIGHT+yPos-5, tableWidth+TABLE_PADDING, ROW_DIVIDER_HEIGHT);
         relativeRow++;
@@ -63,27 +63,39 @@ class TableWidget
         int columnWidth = 85;
         switch(column)
         {
-            case 0: columnWidth = 120;
+            case 0: columnWidth = 110;
             break;
-            case 1: columnWidth = 60;
+            case 1: columnWidth = 50;
             break;
-            case 2: columnWidth = 100;
+            case 2: columnWidth = 80;
             break;
             case 3: columnWidth = 60;
             break;
-            case 4: columnWidth = 180;
+            case 4: columnWidth = 130;
             break;
-            case 5: columnWidth = 100;
+            case 5: columnWidth = 80;
             break;
-            case 6: columnWidth = 40;
+            case 6: columnWidth = 70;
             break;
-            case 7: columnWidth = 50;
+            case 7: columnWidth = 80;
             break;
-            case 8: columnWidth = 220;
+            case 8: columnWidth = 130;
             break;
-            case 9: columnWidth = 30;
+            case 9: columnWidth = 100;
             break;
-            default: columnWidth = 80;
+            case 10: columnWidth = 90;
+            break;
+            case 11: columnWidth = 90;
+            break;
+            case 12: columnWidth = 90;
+            break;
+            case 13: columnWidth = 90;
+            break;
+            case 14: columnWidth = 70;
+            break;
+            case 15: columnWidth = 65;
+            break;
+            default: columnWidth = 50;
         }
         return columnWidth;
    }
