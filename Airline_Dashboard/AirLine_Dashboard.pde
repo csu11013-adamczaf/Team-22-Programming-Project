@@ -3,7 +3,7 @@
   
   void setup()
   {
-    flights = new TableWidget(15, 75, "flights2k.csv");
+    flights = new TableWidget(30, 75, "flights-short.csv");
     size(1920,1080);
     background(#ffffff);
   }

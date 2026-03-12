@@ -6,11 +6,11 @@ float tableWidth;
 
 class TableWidget
 {
-    int pageNumber = 0;
-    Table flightData;
-    PFont tableFont;
-    float xPos;
-    float yPos;
+    private Table flightData;
+    private PFont tableFont;
+    public int pageNumber = 0;
+    public float xPos;
+    public float yPos;
 
     TableWidget(int xPos, int yPos, String flightData)
     {
@@ -21,7 +21,7 @@ class TableWidget
         tableWidth = getColumnOffset(18);
     }
 
-    void printWidget(int numberOfFlightsToDisplay)
+    public void printWidget(int numberOfFlightsToDisplay)
     {
         fill(#F5F5DC);
         rect(xPos-TABLE_PADDING, yPos-HEADER_HEIGHT-TABLE_PADDING, tableWidth+TABLE_PADDING, numberOfFlightsToDisplay*ROW_HEIGHT+HEADER_HEIGHT+TABLE_PADDING, 10);
@@ -30,7 +30,7 @@ class TableWidget
     }
 
 
-    void printHeader()
+    private void printHeader()
     {
         fill(0);
         textFont(tableFont);
@@ -40,14 +40,19 @@ class TableWidget
         }
     }
 
-    void printFlights(int numberOfResults)
+    private void printFlights(int numberOfResults)
    {
     textFont(tableFont);
     fill(0);
+    int maxPageNumber = flightData.getRowCount()/numberOfResults;
     
     int relativeRow = 0;
     for(int row = (pageNumber*numberOfResults == 0 ? 1 : pageNumber*numberOfResults); row < (pageNumber+1)*numberOfResults; row++)
     {
+        if(pageNumber >= maxPageNumber)
+        {
+            pageNumber = 0;
+        }
         for(int column = 0; column < flightData.getColumnCount(); column++)
         {
             text(flightData.getString(row,column),((getColumnOffset(column))+xPos),((relativeRow*ROW_HEIGHT)+yPos+15));
@@ -58,7 +63,7 @@ class TableWidget
 
    }
 
-   int getColumnWidth(int column)
+   private int getColumnWidth(int column)
    {    
         int columnWidth = 85;
         switch(column)
@@ -99,7 +104,7 @@ class TableWidget
         }
         return columnWidth;
    }
-   int getColumnOffset(int column)
+   private int getColumnOffset(int column)
    {
         int offset = 0;
         for(int index = 0; index < column; index++)
