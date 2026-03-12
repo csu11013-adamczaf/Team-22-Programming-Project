@@ -1,4 +1,4 @@
-final int BUTTON_PADDING = 20;
+final int BUTTON_PADDING = 10;
 
 class Button
 {
@@ -16,19 +16,20 @@ class Button
       this.btnH = btnH;
       this.btnX = btnX;
       this.btnY = btnY;
-      this.buttonFont = loadFont("ArialMT-10.vlw");
+      this.buttonFont = loadFont("button-font.vlw");
   }
   
   public void printButton(String text, color fillColor, color textColor)
   {
     hoverButton();
-
+    int textLength = text.length()*5;
+    btnW = textLength + 2*BUTTON_PADDING;
     fill(fillColor);
     stroke(strokeColour);
-    rect(btnX, btnY, btnW, btnH);
+    rect(btnX, btnY, btnW, btnH, 5);
     fill(textColor);
     textFont(buttonFont);
-    text(text, btnX + BUTTON_PADDING, btnY + BUTTON_PADDING);
+    text(text, btnX + BUTTON_PADDING, btnY + 1.75*BUTTON_PADDING);
   }
 
   public void hoverButton()

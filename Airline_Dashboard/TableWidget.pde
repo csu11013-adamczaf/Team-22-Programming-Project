@@ -2,30 +2,38 @@ final int TABLE_PADDING = 10;
 final int ROW_HEIGHT = 30;
 final float ROW_DIVIDER_HEIGHT = 0.5;
 final int HEADER_HEIGHT = 40;
-float tableWidth;
+PFont tableFont;
+PFont headerFont;
 
 class TableWidget
 {
     private Table flightData;
-    private PFont tableFont;
     public int pageNumber = 0;
+    public int maxPageNumber;
     public float xPos;
     public float yPos;
+    public float tableWidth;
+    public float tableHeight;
 
     TableWidget(int xPos, int yPos, String flightData)
     {
         this.xPos = xPos;
         this.yPos = yPos;
         this.flightData = loadTable(flightData);
-        this.tableFont = loadFont("ArialMT-10.vlw");
+        tableFont = loadFont("table-font.vlw");
+        headerFont = loadFont("header-font.vlw");
         tableWidth = getColumnOffset(18);
     }
 
     public void printWidget(int numberOfFlightsToDisplay)
     {
-        fill(#F5F5DC);
+        maxPageNumber = (flightData.getRowCount()-numberOfFlightsToDisplay)/numberOfFlightsToDisplay;
+        tableHeight = numberOfFlightsToDisplay*ROW_HEIGHT+HEADER_HEIGHT+TABLE_PADDING;
+        
         stroke(0);
-        rect(xPos-TABLE_PADDING, yPos-HEADER_HEIGHT-TABLE_PADDING, tableWidth+TABLE_PADDING, numberOfFlightsToDisplay*ROW_HEIGHT+HEADER_HEIGHT+TABLE_PADDING, 10);
+        fill(#1C2C48);
+        rect(xPos-TABLE_PADDING, yPos-HEADER_HEIGHT-TABLE_PADDING, tableWidth+TABLE_PADDING, tableHeight, 10);
+        fill(#ffffff);
         printHeader();
         printFlights(numberOfFlightsToDisplay);
     }
@@ -33,8 +41,8 @@ class TableWidget
 
     private void printHeader()
     {
-        fill(0);
-        textFont(tableFont);
+        textFont(headerFont);
+        stroke(0);
         for(int column = 0; column < flightData.getColumnCount(); column++)
         {
             text(flightData.getString(0, column), ((getColumnOffset(column))+xPos), yPos-HEADER_HEIGHT+20);

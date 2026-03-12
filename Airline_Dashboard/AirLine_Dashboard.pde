@@ -1,20 +1,20 @@
 int btnW = 80;
 int btnH = 30;
-int nextX = 150;
-int nextY = 400;
-int prevX = 50;
-int prevY = 400;
+int nextX = 115;
+int nextY = 460;
+int prevX = 22;
+int prevY = 460;
 TableWidget flights;
 Button prevButton;
 Button nextButton;
   
 void setup()
 {
-  flights = new TableWidget(30, 75, "flights-short.csv");
+  fullScreen(P2D);
+  background(#ffffff);
+  flights = new TableWidget(30, height-315, "flights-short.csv");
   prevButton = new Button(btnW, btnH, prevX, prevY);
   nextButton = new Button(btnW, btnH, nextX, nextY);
-  size(1920,1080);
-  background(#ffffff);
 }
 
 void draw()
@@ -22,8 +22,8 @@ void draw()
   background(#ffffff);
 
   flights.printWidget(10);
-  prevButton.printButton("Prev", 200, 0);
-  nextButton.printButton("Next", 200, 0);
+  prevButton.printButton("Previous Page", 200, 0);
+  nextButton.printButton("Next Page", 200, 0);
 }
 
 void mousePressed()
@@ -38,6 +38,10 @@ void mousePressed()
     if (flights.pageNumber > 0)
     {
       flights.pageNumber--;
+    }
+    else
+    {
+      flights.pageNumber = flights.maxPageNumber;
     }
   }
 }
