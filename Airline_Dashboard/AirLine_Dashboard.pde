@@ -1,47 +1,48 @@
-int btnW = 80;
-int btnH = 30;
-int nextX = 115;
-int nextY = 460;
-int prevX = 22;
-int prevY = 460;
+float btnW = 80;
+float btnH = 30;
 TableWidget flights;
 Button prevButton;
 Button nextButton;
-  
+
+//Sets up screen size & placement, background, creates TableWidget object and sets it x position.
+//Creates two buttons next to TableWidget object.
 void setup()
 {
-  fullScreen(P2D);
+  size(1920,1080, P2D);
+  surface.setLocation(-1,-1);
   background(#ffffff);
-  flights = new TableWidget(30, height-315, "flights-short.csv");
-  prevButton = new Button(btnW, btnH, prevX, prevY);
-  nextButton = new Button(btnW, btnH, nextX, nextY);
+
+  flights = new TableWidget("flights-short.csv");
+  flights.xPos = (width/2)-flights.getTableWidth()/2;
+  prevButton = new Button(btnW, btnH, 0, 0);
+  nextButton = new Button(btnW, btnH, 0, 0);
 }
 
 void draw()
 {
   background(#ffffff);
 
-  flights.printWidget(10);
-  prevButton.printButton("Previous Page", 200, 0);
-  nextButton.printButton("Next Page", 200, 0);
+  flights.printWidget(10, prevButton, nextButton);
+  prevButton.printButton("Previous Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
+  nextButton.printButton("Next Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
 }
 
 void mousePressed()
 {
   if (nextButton.buttonPressed())
   {
-    flights.pageNumber++;
+    flights.currentPage++;
   }
   
   if (prevButton.buttonPressed())
   {
-    if (flights.pageNumber > 0)
+    if (flights.currentPage > 0)
     {
-      flights.pageNumber--;
+      flights.currentPage--;
     }
     else
     {
-      flights.pageNumber = flights.maxPageNumber;
+      flights.currentPage = flights.getMaxPage();
     }
   }
 }
