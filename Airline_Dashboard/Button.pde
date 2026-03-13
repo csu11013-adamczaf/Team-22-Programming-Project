@@ -2,21 +2,21 @@ final int BUTTON_PADDING = 10;
 
 class Button
 {
-  public int btnW = 80;
-  public int btnH = 30;
-  public int btnX = 150;
-  public int btnY = 400;
+  public float btnW = 80;
+  public float btnH = 30;
+  public float btnX = 0;
+  public float btnY = 0;
   private PFont buttonFont;
   private int strokeColour = 0;
 
 
-  Button(int btnW, int btnH, int btnX, int btnY)
+  Button(float btnW, float btnH, float btnX, float btnY)
   {
       this.btnW = btnW;
       this.btnH = btnH;
       this.btnX = btnX;
       this.btnY = btnY;
-      this.buttonFont = loadFont("button-font.vlw");
+      this.buttonFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
   }
   
   public void printButton(String text, color fillColor, color textColor)
@@ -36,10 +36,10 @@ class Button
   {
     if((mouseX > btnX && mouseX < btnX+btnW) && (mouseY > btnY && mouseY < btnY+btnH))
     {
-      strokeColour = #ffffff;
+      strokeColour = Visuals.GLOBAL_STROKE_COLOUR_LIGHT;
     }
     else{
-      strokeColour = 0;
+      strokeColour = Visuals.GLOBAL_STROKE_COLOUR_DARK;
     }
   }
 
