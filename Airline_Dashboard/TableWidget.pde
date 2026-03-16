@@ -1,3 +1,5 @@
+import java.lang.Math;
+
 final int HORIZONTAL_PADDING = 20;
 final int HEADER_PADDING = 24;
 final int FLIGHT_DATA_PADDING = 15;
@@ -13,10 +15,11 @@ PFont headerFont;
 
 class TableWidget
 {
-    public int currentPage = 0;
     public float xPos = 0;
+    private int currentPage = 0;
     private float yPos = 0;
     private int maxPageNumber;
+    private int numberOfFlightsToDisplay;
     private Table flightData;
     private float tableWidth = getColumnOffset(18);
     private float tableHeight;   
@@ -45,9 +48,18 @@ class TableWidget
         }
     }
 
+    // Accessor methods for private variables;
     public int getMaxPage()
     {
         return maxPageNumber;
+    }
+    public float getXPos()
+    {
+        return xPos;
+    }
+        public int getCurrentPage()
+    {
+        return currentPage;
     }
     public float getTableWidth()
     {
@@ -58,11 +70,46 @@ class TableWidget
         return tableHeight;
     }
 
+    // Methods for traversing between pages
+    public void nextPage()
+    {
+        if(currentPage < (((flightData.getRowCount()-1) % numberOfFlightsToDisplay != 0 && flightData.getRowCount()-1 > numberOfFlightsToDisplay*(maxPageNumber+1)) ? maxPageNumber+1 : maxPageNumber))
+        {
+            currentPage++;
+        }
+        else
+        {
+            currentPage = 0;
+        }
+    }
+
+    public void previousPage()
+    {
+        if(currentPage > 0)
+        {
+            currentPage--;
+        }
+        else
+        {
+            currentPage = maxPageNumber;
+        }
+    }
+
+     public void setCurrentPage(int newPage)
+    {
+        currentPage = newPage;
+    }
+    public void setXPos(float xPos)
+    {
+        this.xPos = xPos;
+    }
+
     // Prints the header row and flight data to the screen. 
     // Sets table height and number of pages based on number of flights to be displayed.
     public void printWidget(int numberOfFlightsToDisplay)
     {
-        maxPageNumber = (flightData.getRowCount() - numberOfFlightsToDisplay) / numberOfFlightsToDisplay;
+        this.numberOfFlightsToDisplay = numberOfFlightsToDisplay;
+        maxPageNumber = (flightData.getRowCount() / numberOfFlightsToDisplay)-1;
         tableHeight = (numberOfFlightsToDisplay * ROW_HEIGHT) + HEADER_HEIGHT;
         yPos = height-TABLE_Y_OFFSET-tableHeight;
         
@@ -101,42 +148,36 @@ class TableWidget
    {
 
     int relativeRow = 0;
-    for(int row = (currentPage == 0 ? 1 : currentPage*numberOfResults+1); row <= (currentPage+1)*numberOfResults; row++)
+    for(int row = (currentPage == 0 ? 1 : currentPage*numberOfResults+1); row <= (currentPage+1)*numberOfResults && row < flightData.getRowCount(); row++)
     {
         float flightDataXPos = 0;
         float flightDataYPos = 0;
 
-        if(row >= flightData.getRowCount())
+        for(int column = 0; column < flightData.getColumnCount(); column++)
         {
-            currentPage = 0;
-        }
-        else{
-            for(int column = 0; column < flightData.getColumnCount(); column++)
+            if((flightData.getString(row, 15)).equals("YES"))
             {
-                if((flightData.getString(row, 15)).equals("YES"))
-                {
-                    fill(#FF0000);
-                    textFont(headerFont);
-                }
-                else if((flightData.getString(row, 16)).equals("YES"))
-                {
-                    fill(#F5DD27);
-                    textFont(headerFont);
-                }
-                else
-                {
-                    fill(Visuals.GLOBAL_TEXT_COLOUR_LIGHT);
-                    textFont(tableFont);
-                }
-
-                flightDataXPos = (getColumnOffset(column)) + xPos + HORIZONTAL_PADDING;
-                flightDataYPos = (relativeRow*ROW_HEIGHT) + yPos + HEADER_HEIGHT + FLIGHT_DATA_PADDING;
-                
-                text(flightData.getString(row,column),flightDataXPos,flightDataYPos);
+                fill(#FF0000);
+                textFont(headerFont);
             }
-            rect(xPos, relativeRow*ROW_HEIGHT+yPos-5+HEADER_HEIGHT, tableWidth+HORIZONTAL_PADDING, ROW_DIVIDER_HEIGHT);
-            relativeRow++;
+            else if((flightData.getString(row, 16)).equals("YES"))
+            {
+                fill(#F5DD27);
+                textFont(headerFont);
+            }
+            else
+            {
+                fill(Visuals.GLOBAL_TEXT_COLOUR_LIGHT);
+                textFont(tableFont);
+            }
+            flightDataXPos = (getColumnOffset(column)) + xPos + HORIZONTAL_PADDING;
+            flightDataYPos = (relativeRow*ROW_HEIGHT) + yPos + HEADER_HEIGHT + FLIGHT_DATA_PADDING;
+            
+            text(flightData.getString(row,column),flightDataXPos,flightDataYPos);
         }
+        rect(xPos, relativeRow*ROW_HEIGHT+yPos-5+HEADER_HEIGHT, tableWidth+HORIZONTAL_PADDING, ROW_DIVIDER_HEIGHT);
+        relativeRow++;
+        
     }
 
    }

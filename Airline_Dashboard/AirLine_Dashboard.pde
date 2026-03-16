@@ -13,7 +13,7 @@ void setup()
   background(#ffffff);
 
   flights = new TableWidget("flights-short.csv");
-  flights.xPos = (width/2)-flights.getTableWidth()/2;
+  flights.setXPos((width/2)-flights.getTableWidth()/2);
   prevButton = new Button(btnW, btnH, 0, 0);
   nextButton = new Button(btnW, btnH, 0, 0);
 }
@@ -25,24 +25,26 @@ void draw()
   flights.printWidget(10, prevButton, nextButton);
   prevButton.printButton("Previous Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
   nextButton.printButton("Next Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
+
+  text(flights.maxPageNumber, 100, 100);
 }
 
 void mousePressed()
 {
   if (nextButton.buttonPressed())
   {
-    flights.currentPage++;
+    flights.nextPage();
   }
   
   if (prevButton.buttonPressed())
   {
-    if (flights.currentPage > 0)
+    if (flights.getCurrentPage() > 0)
     {
-      flights.currentPage--;
+      flights.previousPage();
     }
     else
     {
-      flights.currentPage = flights.getMaxPage();
+      flights.setCurrentPage(flights.getMaxPage());
     }
   }
 }
