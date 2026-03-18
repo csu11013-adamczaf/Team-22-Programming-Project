@@ -26,7 +26,6 @@ void draw()
   prevButton.printButton("Previous Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
   nextButton.printButton("Next Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
 
-  text(flights.maxPageNumber, 100, 100);
 }
 
 void mousePressed()
@@ -38,13 +37,6 @@ void mousePressed()
   
   if (prevButton.buttonPressed())
   {
-    if (flights.getCurrentPage() > 0)
-    {
-      flights.previousPage();
-    }
-    else
-    {
-      flights.setCurrentPage(flights.getMaxPage());
-    }
+    flights.previousPage();
   }
 }

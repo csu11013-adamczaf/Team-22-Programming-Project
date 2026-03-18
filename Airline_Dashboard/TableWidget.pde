@@ -91,13 +91,16 @@ class TableWidget
         }
         else
         {
-            currentPage = maxPageNumber;
+            currentPage = ((flightData.getRowCount()-1) % numberOfFlightsToDisplay != 0 && flightData.getRowCount()-1 > numberOfFlightsToDisplay*(maxPageNumber+1)) ? maxPageNumber+1 : maxPageNumber;
         }
     }
 
      public void setCurrentPage(int newPage)
     {
-        currentPage = newPage;
+        if(newPage >=0 && newPage <= maxPageNumber)
+        {
+            currentPage = newPage;
+        }
     }
     public void setXPos(float xPos)
     {
@@ -148,7 +151,7 @@ class TableWidget
    {
 
     int relativeRow = 0;
-    for(int row = (currentPage == 0 ? 1 : currentPage*numberOfResults+1); row <= (currentPage+1)*numberOfResults && row < flightData.getRowCount(); row++)
+    for(int row = (currentPage == 0 ? 1 : (currentPage*numberOfResults)+1); row <= (currentPage+1)*numberOfResults && row < flightData.getRowCount(); row++)
     {
         float flightDataXPos = 0;
         float flightDataYPos = 0;
