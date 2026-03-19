@@ -74,8 +74,10 @@ class Graphs
         PFont titleFont = loadFont(Visuals.GRAPHS_FONT); //Change this later!
         Query query = new Query();
         float numberOfEntries = data.getColumnCount();
-        float overallChartHeight = query.maxValue((diameter+(2*GRAPHS_PADDING)), (numberOfEntries*GRAPHS_ROW_HEIGHT));
+        float overallChartHeight = query.maxValue((diameter), (numberOfEntries*GRAPHS_ROW_HEIGHT))+(2*GRAPHS_PADDING);
+        float overallChartWidth = diameter+(3*GRAPHS_PADDING)+(10*(data.getString(HEADER_ROW, 0).length()+16));
         float textYPos = (yPos+(overallChartHeight-(numberOfEntries*GRAPHS_ROW_HEIGHT))/2)+15;
+        float chartYPos = yPos+(overallChartHeight/2);
         
         for(int index = 0; index < data.getColumnCount(); index++)
         {
@@ -84,17 +86,17 @@ class Graphs
 
         fill(Visuals.GRAPHS_BACKGROUND_COLOUR);
         noStroke();
-        rect(xPos, yPos, diameter+(2*GRAPHS_PADDING)+200, overallChartHeight, 10);
+        rect(xPos, yPos, overallChartWidth, overallChartHeight, 10);
 
         textFont(titleFont);
         fill(0);
-        text(title, xPos+((diameter+(2*GRAPHS_PADDING)+200)/2)-((title.length()*8)/2), yPos);
+        text(title, xPos+(overallChartWidth/2)-((title.length()*8)/2), yPos);
         
         textFont(graphsFont);
         for(int index = 0; index < data.getColumnCount(); index++)
         {
             fill(colour);
-            arc(xPos+diameter/2+GRAPHS_PADDING, yPos+diameter/2+GRAPHS_PADDING, diameter, diameter, startAngle, startAngle+radians((data.getFloat(DATA_ROW,index)/total)*360));
+            arc(xPos+diameter/2+GRAPHS_PADDING, chartYPos  /*yPos+diameter/2+GRAPHS_PADDING*/, diameter, diameter, startAngle, startAngle+radians((data.getFloat(DATA_ROW,index)/total)*360));
     
             rect(xPos+diameter+(2*GRAPHS_PADDING), textYPos+((index-0.5)*GRAPHS_ROW_HEIGHT), 15, 15);
             fill(0);
@@ -104,6 +106,5 @@ class Graphs
             colour += 25;
         }   
     }
-
 
 }
