@@ -70,7 +70,7 @@ class TableWidget
         return tableHeight;
     }
 
-    // Methods for traversing between pages
+// Methods for traversing between pages
     public void nextPage()
     {
         if(currentPage < (((flightData.getRowCount()-1) % numberOfFlightsToDisplay != 0 && flightData.getRowCount()-1 > numberOfFlightsToDisplay*(maxPageNumber+1)) ? maxPageNumber+1 : maxPageNumber))
