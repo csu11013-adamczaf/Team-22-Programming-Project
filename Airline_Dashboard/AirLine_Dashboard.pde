@@ -18,6 +18,7 @@ void setup()
   flights.setXPos((width/2)-flights.getTableWidth()/2);
   prevButton = new Button(btnW, btnH, 0, 0);
   nextButton = new Button(btnW, btnH, 0, 0);
+
 }
 
 void draw()
@@ -27,6 +28,8 @@ void draw()
   flights.printWidget(10, prevButton, nextButton);
   prevButton.printButton("Previous Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
   nextButton.printButton("Next Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
+
+  flights.displayPageNumber(prevButton);
 
   //TESTING! This shows how the countRelative() function sorts the relative counts in a table
   Table test = graphs.createTableOfRelativeCount(flights.flightData.getStringColumn(15));

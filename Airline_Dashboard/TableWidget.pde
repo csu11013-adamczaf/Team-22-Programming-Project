@@ -57,7 +57,7 @@ class TableWidget
     {
         return xPos;
     }
-        public int getCurrentPage()
+    public int getCurrentPage()
     {
         return currentPage;
     }
@@ -106,6 +106,17 @@ class TableWidget
     {
         this.xPos = xPos;
     }
+    public void displayPageNumber(Button button)
+    {
+        textFont(tableFont);
+        color(255,0,0);
+        text("Page "+(currentPage+1)+" of "+(maxPageNumber+1), xPos+tableWidth-button.btnW+13, button.btnY+18);
+        noFill();
+        stroke(15);
+        rect(xPos+tableWidth-button.btnW, button.btnY, button.btnW, button.btnH,5);
+    }
+
+
 
     // Prints the header row and flight data to the screen. 
     // Sets table height and number of pages based on number of flights to be displayed.
