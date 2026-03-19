@@ -1,3 +1,5 @@
+import java.lang.Math;
+
 final int GRAPHS_ROW_HEIGHT = 30;
 final int GRAPHS_PADDING = 20;
 
@@ -55,10 +57,13 @@ class Graphs
         final int HEADER_ROW = 0;
         final int DATA_ROW = 1;
         PFont graphsFont = loadFont(Visuals.GRAPHS_FONT);
-        PFont titleFont = loadFont(Visuals.GRAPHS_FONT);
+        PFont titleFont = loadFont(Visuals.GRAPHS_FONT); //Change this later!
+        Query query = new Query();
         float numberOfEntries = data.getColumnCount();
-        float overallChartHeight = diameter+(2*GRAPHS_PADDING);
+        float overallChartHeight = query.maxValue((diameter), (numberOfEntries*GRAPHS_ROW_HEIGHT))+(2*GRAPHS_PADDING);
+        float overallChartWidth = diameter+(3*GRAPHS_PADDING)+(10*(data.getString(HEADER_ROW, 0).length()+16));
         float textYPos = (yPos+(overallChartHeight-(numberOfEntries*GRAPHS_ROW_HEIGHT))/2)+15;
+        float chartYPos = yPos+(overallChartHeight/2);
         
         for(int index = 0; index < data.getColumnCount(); index++)
         {
@@ -67,24 +72,79 @@ class Graphs
 
         fill(Visuals.GRAPHS_BACKGROUND_COLOUR);
         noStroke();
-        rect(xPos, yPos, diameter+(2*GRAPHS_PADDING)+200, overallChartHeight, 10);
+        rect(xPos, yPos, overallChartWidth, overallChartHeight, 10);
 
         textFont(titleFont);
         fill(0);
-        text(title, xPos+((diameter+(2*GRAPHS_PADDING)+200)/2)-((title.length()*8)/2), yPos);
+        text(title, xPos+(overallChartWidth/2)-((title.length()*8)/2), yPos);
         
         textFont(graphsFont);
         for(int index = 0; index < data.getColumnCount(); index++)
         {
             fill(colour);
-            arc(xPos+diameter/2+GRAPHS_PADDING, yPos+diameter/2+GRAPHS_PADDING, diameter, diameter, startAngle, startAngle+radians((data.getFloat(DATA_ROW,index)/total)*360));
+            arc(xPos+diameter/2+GRAPHS_PADDING, chartYPos  /*yPos+diameter/2+GRAPHS_PADDING*/, diameter, diameter, startAngle, startAngle+radians((data.getFloat(DATA_ROW,index)/total)*360));
     
             rect(xPos+diameter+(2*GRAPHS_PADDING), textYPos+((index-0.5)*GRAPHS_ROW_HEIGHT), 15, 15);
             fill(0);
-            text(data.getString(HEADER_ROW, index),xPos+diameter+(3*GRAPHS_PADDING), textYPos+(index*GRAPHS_ROW_HEIGHT));
+            text(data.getString(HEADER_ROW, index) + " (" + ((data.getFloat(DATA_ROW,index)/total)*100) + "%)",xPos+diameter+(3*GRAPHS_PADDING), textYPos+(index*GRAPHS_ROW_HEIGHT));
             
             startAngle+=radians((data.getFloat(DATA_ROW,index)/total)*360);
-            colour += 70;
+            colour += 25;
         }   
     }
+
+    public void printBarChart(float xPos, float yPos, float chartWidth, float barHeight, int baseColour, String title, Table data)
+{
+    final int HEADER_ROW = 0;
+    final int DATA_ROW = 1;
+
+    int numBars = data.getColumnCount();
+    float maxValue = 0;
+
+    // Find the maximum value for scaling
+    for (int i = 0; i < numBars; i++)
+    {
+        float v = data.getFloat(DATA_ROW, i);
+        if (v > maxValue) maxValue = v;
+    }
+
+    float chartHeight = numBars * (barHeight + 10) + GRAPHS_PADDING * 2;
+
+    // Background panel
+    fill(Visuals.GRAPHS_BACKGROUND_COLOUR);
+    noStroke();
+    rect(xPos, yPos, chartWidth + 200, chartHeight, 10);
+
+    // Title
+    PFont titleFont = loadFont(Visuals.GRAPHS_FONT);
+    textFont(titleFont);
+    fill(0);
+    text(title, xPos + (chartWidth + 200)/2 - (title.length()*8)/2, yPos-2);
+
+    // Bars + labels
+    PFont graphsFont = loadFont(Visuals.GRAPHS_FONT);
+    textFont(graphsFont);
+
+    float barY = yPos + GRAPHS_PADDING + 20;
+    int colour = baseColour;
+
+    for (int i = 0; i < numBars; i++)
+    {
+        float value = data.getFloat(DATA_ROW, i);
+        float barWidth = map(value, 0, maxValue, 0, chartWidth);
+
+        // Bar colour
+        fill(colour);
+        rect(xPos + GRAPHS_PADDING, barY, barWidth, barHeight);
+
+        // Label
+        fill(0);
+        text(data.getString(HEADER_ROW, i) + " (" + (int)value + ")", 
+             xPos + GRAPHS_PADDING + barWidth + 10, 
+             barY + barHeight - 5);
+
+        barY += barHeight + 10;
+        colour += 70; // same colour progression as your pie chart
+    }
+}
 }

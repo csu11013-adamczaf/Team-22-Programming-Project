@@ -29,11 +29,11 @@ void draw()
   nextButton.printButton("Next Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
 
   //TESTING! This shows how the countRelative() function sorts the relative counts in a table
-  Table test = graphs.createTableOfRelativeCount(flights.flightData.getStringColumn(15));
+  Table test = graphs.createTableOfRelativeCount(flights.flightData.getStringColumn(17));
   text("This is how createTableOfRelativeCount() function organises the data",900, 475);
   graphs.printOutputTable(1000,500,test);
-
-  graphs.printPieChart(300, 300, 200, 0x0, "Flight Cancellations", test);
+  graphs.printBarChart(50, 50, 300, 20, color(100, 150, 200), "Bar Chart", test);
+  graphs.printPieChart(400, 400, 200, 0x0, "Flight Cancellations", test);
   //End of testing
 }
 
