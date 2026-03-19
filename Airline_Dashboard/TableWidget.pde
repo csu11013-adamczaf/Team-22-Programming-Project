@@ -69,6 +69,11 @@ class TableWidget
     {
         return tableHeight;
     }
+    
+    public Table getData()
+    {
+        return flightData;
+    }
 
     // Methods for traversing between pages
     public void nextPage()
