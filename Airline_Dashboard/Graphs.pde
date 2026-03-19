@@ -25,7 +25,7 @@ class Graphs
             if(!query.exists(inputData[index], usedValues))
             {
                 outputTable.addColumn(inputData[index]);
-                int occurences = countOccurences(inputData[index],inputData);
+                int occurences = query.countOccurences(inputData[index],inputData);
                 outputTable.setString(0, currentColumn, inputData[index]);
                 outputTable.setInt(1, currentColumn, occurences);
                 currentColumn++;
@@ -45,20 +45,6 @@ class Graphs
                 text(outputTable.getString(row,column), xPos+(30*column), yPos+(30*row));
             }
         }
-    }
-
-    // Counts how many times a specified string occurs within a String Array.
-    public int countOccurences(String searchTerm, String[] inputData)
-    {
-        int count = 0;
-        for(int index = 0; index < inputData.length; index++)
-        {
-            if(searchTerm.equals(inputData[index]))
-            {
-                count++;
-            }
-        }
-        return count;
     }
 
 

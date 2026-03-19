@@ -20,4 +20,18 @@ public class Query
         String[] dataArray = data.toArray(new String[data.size()]);
         return exists(searchTerm, dataArray);
     }
+
+    // Counts how many times a specified String occurs within a String Array.
+    public int countOccurences(String searchTerm, String[] data)
+    {
+        int count = 0;
+        for(int index = 0; index < data.length; index++)
+        {
+            if(searchTerm.equals(data[index]))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
 }
