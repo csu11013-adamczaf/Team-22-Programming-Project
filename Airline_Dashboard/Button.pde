@@ -38,7 +38,8 @@ class Button
     {
       strokeColour = Visuals.GLOBAL_STROKE_COLOUR_LIGHT;
     }
-    else{
+    else
+    {
       strokeColour = Visuals.GLOBAL_STROKE_COLOUR_DARK;
     }
   }

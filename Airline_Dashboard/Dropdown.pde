@@ -1,8 +1,8 @@
-final int DROPDOWN_H          = 28;
-final int DROPDOWN_ITEM_H     = 26;
-final int DROPDOWN_PADDING_X  = 10;
-final int DROPDOWN_CHEVRON_W  = 20;
-final int DROPDOWN_MAX_ITEMS  = 8;
+final int DROPDOWN_H = 28;
+final int DROPDOWN_ITEM_H = 26;
+final int DROPDOWN_PADDING_X = 10;
+final int DROPDOWN_CHEVRON_W = 20;
+final int DROPDOWN_MAX_ITEMS = 8;
 
 class Dropdown
 {
@@ -24,12 +24,12 @@ class Dropdown
 
     Dropdown(float x, float y, float w, String[] labels, int[] columnIndices)
     {
-        this.ddX           = x;
-        this.ddY           = y;
-        this.ddW           = w;
-        this.labels        = labels;
+        this.ddX = x;
+        this.ddY = y;
+        this.ddW = w;
+        this.labels = labels;
         this.columnIndices = columnIndices;
-        this.ddFont        = loadFont(Visuals.BUTTON_BUTTON_FONT);
+        this.ddFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
     }
 
     public int getSelectedIndex()
@@ -101,17 +101,16 @@ class Dropdown
 
         for (int i = 0; i < visibleCount; i++)
         {
-            float rowY    = listY + i * DROPDOWN_ITEM_H;
+            float rowY = listY + i * DROPDOWN_ITEM_H;
             boolean hover = _hoveringListItem(i);
-            boolean sel   = (i == selectedItem);
+            boolean sel = (i == selectedItem);
 
             noStroke();
-            if      (sel)   fill(COL_LIST_SEL);
+            if (sel) fill(COL_LIST_SEL);
             else if (hover) fill(COL_LIST_HOVER);
-            else            fill(COL_LIST_BG);
+            else fill(COL_LIST_BG);
             rect(ddX, rowY, ddW, DROPDOWN_ITEM_H);
 
-            // Row text
             fill(COL_TEXT);
             String label = _truncate(labels[i], ddW - 2 * DROPDOWN_PADDING_X);
             text(label, ddX + DROPDOWN_PADDING_X, rowY + DROPDOWN_ITEM_H / 2.0);
@@ -155,16 +154,14 @@ class Dropdown
 
     private boolean _hoveringBar()
     {
-        return mouseX > ddX && mouseX < ddX + ddW &&
-               mouseY > ddY && mouseY < ddY + DROPDOWN_H;
+        return mouseX > ddX && mouseX < ddX + ddW && mouseY > ddY && mouseY < ddY + DROPDOWN_H;
     }
 
     private boolean _hoveringListItem(int i)
     {
         float listY = ddY + DROPDOWN_H;
         float rowY  = listY + i * DROPDOWN_ITEM_H;
-        return mouseX > ddX && mouseX < ddX + ddW &&
-               mouseY > rowY && mouseY < rowY + DROPDOWN_ITEM_H;
+        return mouseX > ddX && mouseX < ddX + ddW && mouseY > rowY && mouseY < rowY + DROPDOWN_ITEM_H;
     }
 
     private String _truncate(String s, float maxWidth)

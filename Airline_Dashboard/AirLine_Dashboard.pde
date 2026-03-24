@@ -6,6 +6,8 @@ Button prevButton;
 Button nextButton;
 Graphs graphs;
 
+//Sets up screen size & placement, background, creates TableWidget object and sets it x position.
+//Creates two buttons next to TableWidget object.
 void setup()
 {
   size(1920, 1080, P2D);
@@ -24,6 +26,7 @@ void draw()
   background(#ffffff);
 
   graphs.printPieChart();
+  graphs.printBarChart();
   graphs.printLineChart();
   graphs.printDropdownLists();
 
