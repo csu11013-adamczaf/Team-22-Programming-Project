@@ -58,4 +58,4 @@ Flight Date,Carrier,Flight Number,Origin,Origin City,Origin State,Origin WAC,Des
 01/06/2022 00:00,B6,2,FLL,"Fort Lauderdale, FL",FL,33,JFK,"New York, NY",NY,22,1115,1109,1405,1346,0,0,1069
 01/01/2022 00:00,AS,3,DCA,"Washington, DC",VA,38,SEA,"Seattle, WA",WA,93,1735,1814,2045,2136,0,0,2329
 01/01/2022 00:00,HA,3,LAX,"Los Angeles, CA",CA,91,HNL,"Honolulu, HI",HI,2,955,1040,1400,1433,0,0,2556
-01/01/2022 00:00,NK,LAST,ORD,"Chicago, IL",IL,41,FLL,"Fort Lauderdale, FL",FL,33,715,710,1126,1110,0,0,1182
+01/01/2022 00:00,HA,LAST,LAX,"Los Angeles, CA",CA,91,HNL,"Honolulu, HI",HI,2,955,1040,1400,1433,0,0,2556

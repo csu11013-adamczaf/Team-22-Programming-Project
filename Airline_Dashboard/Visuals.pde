@@ -1,4 +1,3 @@
-
 //Contains constants representing values for different visual aspects of the project
 public class Visuals
 {
@@ -17,5 +16,7 @@ public class Visuals
   public static final int SPACE_BETWEEN_BUTTONS = 10;
   public static final String BUTTON_BUTTON_FONT = "Button/button-font.vlw";
 
-
+  //Constants for Graphs class
+  public static final int GRAPHS_BACKGROUND_COLOUR = #E3E3E3;
+  public static final String GRAPHS_FONT = "Graphs/graphs-font-18.vlw";
 }
