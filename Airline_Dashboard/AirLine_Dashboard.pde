@@ -33,6 +33,7 @@ void draw()
   flights.printWidget(ROWS_TO_DISPLAY, prevButton, nextButton);
   prevButton.printButton("Previous Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
   nextButton.printButton("Next Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
+  flights.displayPageNumber(Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
 }
 
 void mousePressed()

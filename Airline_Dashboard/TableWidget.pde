@@ -105,6 +105,31 @@ class TableWidget
         this.xPos = xPos;
     }
 
+
+    
+    public void displayPageNumber(color fillColor, color textColor)
+    {
+      String text = "Page "+(currentPage+1)+" of "+(maxPageNumber+1);
+      int textLength = text.length() * 5;
+      float dispW = textLength + 2 * BUTTON_PADDING;
+      float dispH = 30;
+      float dispX = this.xPos+this.tableWidth-dispW;
+      float dispY = this.yPos - btnH - Visuals.SPACE_BETWEEN_BUTTONS;
+    
+      // 3. Draw the background box
+      fill(fillColor);
+      stroke(15); // Consistent with your original requirement
+      rect(dispX, dispY, dispW, dispH, 5);
+    
+      // 4. Draw the text
+      fill(textColor);
+      textFont(tableFont); // Using tableFont as in your original snippet
+      
+      textAlign(CENTER, CENTER);
+      text(text, dispX + dispW/2, dispY + dispH/2);
+      textAlign(LEFT, BASELINE);
+    }
+    
     // Prints the header row and flight data to the screen. 
     // Sets table height and number of pages based on number of flights to be displayed.
     public void printWidget(int numberOfFlightsToDisplay)

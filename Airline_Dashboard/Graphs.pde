@@ -2,7 +2,7 @@ import java.util.HashMap;
 
 final color[] GRAPH_PALETTE = { #4E79A7, #F28E2B, #E15759, #76B7B2, #59A14F, #EDC948, #B07AA1, #FF9DA7 };
 
-final int GRAPH_REGION_GAP = 10;
+final int GRAPH_REGION_GAP = 50;
 final int GRAPH_MARGIN = 20;
 final int GRAPH_LEGEND_W = 260;
 final int GRAPH_TITLE_H = 36;
