@@ -38,7 +38,7 @@ public class Query
                 {
                     userQuery = userQuery.substring(0, userQuery.length()-1);
                 }
-                else if((key >= 'A' && key <= 'z') || key == ' ' || key == '/' || key == ',' || key == ':' || (key >= '0' && key <= '9'))
+                if((key >= 'A' && key <= 'z') || key == ' ' || key == '/' || key == ',' || key == ':' || (key >= '0' && key <= '9'))
                 {
                     userQuery += key;
                 }
@@ -54,15 +54,20 @@ public class Query
 
     public void printQueryBox(float xPos, float yPos, Dropdown dropDown)
     {
-        float boxXPos=xPos-((textBoxWidth+dropDown.ddW)/2);
-        
-        dropDown.setPosition(boxXPos+textBoxWidth+10,yPos);
+        String searchbyString = "Search through: ";
+        float widgetWidth = textBoxWidth+60+dropDown.ddW+textWidth(searchbyString);
+        float boxXPos=xPos-((widgetWidth)/2);
+        dropDown.setPosition(boxXPos+textBoxWidth+textWidth(searchbyString)+20,yPos);
 
+        fill(#D8D8D8);
+        rect(boxXPos-20, yPos-20, widgetWidth, textBoxHeight+40, 10);
         stroke(0);
         fill(#a5a5a5a5);
         rect(boxXPos, yPos, textBoxWidth, textBoxHeight, 10);
         fill(0);
-        text("Query: " + userQuery, boxXPos+20, yPos+25);
+        text("Search for: " + userQuery, boxXPos+20, yPos+28);
+        text(searchbyString, boxXPos+20+textBoxWidth, yPos+28);
+        rect(boxXPos+20+textWidth("Search for: "+ userQuery), yPos+8, 1,23);
     }
 
 

@@ -36,6 +36,7 @@ void setup()
 
 void draw()
 {
+  frameRate(30);
   background(#ffffff);
   screen1Button.printButton("Home", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
   screen2Button.printButton("Query Tab", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
