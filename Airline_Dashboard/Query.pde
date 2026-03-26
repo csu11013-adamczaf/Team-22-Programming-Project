@@ -41,7 +41,7 @@ public class Query
                 {
                     userQuery = userQuery.substring(0, userQuery.length()-1);
                 }
-                else if(key >= 'A' && key <= 'z')
+                else if(key >= 'A' && key <= 'z' || key == ' ')
                 {
                     userQuery += key;
                 }
