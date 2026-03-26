@@ -2,10 +2,10 @@ final int BUTTON_PADDING = 10;
 
 class Button
 {
-  public float btnW = 80;
-  public float btnH = 30;
-  public float btnX = 0;
-  public float btnY = 0;
+  private float btnW = 80;
+  private float btnH = 30;
+  private float btnX = 0;
+  private float btnY = 0;
   private PFont buttonFont;
   private int strokeColour = 0;
 
@@ -23,7 +23,7 @@ class Button
   {
     hoverButton();
     int textLength = text.length()*5;
-    btnW = textLength + 2*BUTTON_PADDING;
+    btnW = (this.btnW >= textLength + 2*BUTTON_PADDING ? this.btnW : textLength + 2*BUTTON_PADDING);
     fill(fillColor);
     stroke(strokeColour);
     rect(btnX, btnY, btnW, btnH, 5);
@@ -38,7 +38,8 @@ class Button
     {
       strokeColour = Visuals.GLOBAL_STROKE_COLOUR_LIGHT;
     }
-    else{
+    else
+    {
       strokeColour = Visuals.GLOBAL_STROKE_COLOUR_DARK;
     }
   }
