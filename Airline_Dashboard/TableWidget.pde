@@ -43,10 +43,6 @@ class TableWidget
             }
         }
     }
-    TableWidget(Table flightData)
-    {
-        this.flightData = flightData;
-    }
 
     // Accessor methods for private variables;
     public int getMaxPage()
@@ -223,6 +219,28 @@ class TableWidget
         }
     }
 
+      public void displayResultsCount(color fillColor, color textColor)
+  {
+    int total = flightData.getRowCount() - 1;
+    String text = "Showing " + total + " flights";
+    int textLength = text.length() * 5;
+    float dispW = textLength + 2 * BUTTON_PADDING;
+    float dispH = 30;
+    float dispX = this.xPos;
+    float dispY = this.yPos - btnH - Visuals.SPACE_BETWEEN_BUTTONS;
+  
+    fill(fillColor);
+    stroke(15);
+    rect(dispX + prevButton.btnW + nextButton.btnW + 2*Visuals.SPACE_BETWEEN_BUTTONS, dispY, dispW, dispH, 5);
+  
+    fill(textColor);
+    textFont(tableFont);
+    textAlign(CENTER, CENTER);
+    text(text, dispX + prevButton.btnW + nextButton.btnW + 2*Visuals.SPACE_BETWEEN_BUTTONS + dispW/2, dispY + dispH/2);
+    textAlign(LEFT, BASELINE);
+  
+  }
+
    // Returns the width of each column 
     private int getColumnWidth(int column)
     {
@@ -246,6 +264,7 @@ class TableWidget
             case 15: return 65;
             default: return 50;
         }
+
     }
 
    // Returns sum of widths of preceding columns to be used as an offset.

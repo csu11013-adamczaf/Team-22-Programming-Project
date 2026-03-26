@@ -15,6 +15,7 @@ final int GRAPH_DROPDOWN_W = 210;
 final int GRAPH_DROPDOWN_GAP = 10;
 final int GRAPH_POINT_PAD = 40;
 final int GRAPH_PANEL_Y = 30;
+PFont GRAPH_FONT;
 
 final int[] CATEGORICAL_COLS = { 0, 1, 2, 3, 4, 5, 7, 8, 9, 15, 16 };
 final int[] NUMERICAL_COLS = { 6, 10, 11, 12, 13, 14, 17 };
@@ -38,6 +39,7 @@ class Graphs
         this.numberOfRows = numberOfRows;
         this.graphFont = loadFont(Visuals.TABLEWIDGET_TABLE_FONT);
         this.titleFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
+        GRAPH_FONT = loadFont(Visuals.BUTTON_BUTTON_FONT);
         _initDropdowns();
     }
 
@@ -61,11 +63,11 @@ class Graphs
             numLabels[i] = data.getString(0, NUMERICAL_COLS[i]);
         }
 
-        pieCategoryDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices);
-        lineCategoryDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices);
-        lineValueDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices);
-        barCategoryDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices);
-        barValueDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices);
+        pieCategoryDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices, GRAPH_FONT);
+        lineCategoryDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices, GRAPH_FONT);
+        lineValueDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices, GRAPH_FONT);
+        barCategoryDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices, GRAPH_FONT);
+        barValueDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices, GRAPH_FONT);
     }
 
     private float tableTopY()
@@ -106,7 +108,7 @@ class Graphs
         _drawTitle(title, panelX, panelY, panelW);
 
         float ddX = panelX + GRAPH_MARGIN;
-        float ddY = panelY + GRAPH_TITLE_H + (GRAPH_DROPDOWN_H - DROPDOWN_H) / 2.0;
+        float ddY = panelY + GRAPH_TITLE_H + (GRAPH_DROPDOWN_H - dropDowncellHeight) / 2.0;
         pieCategoryDD.setPosition(ddX, ddY);
         pieCategoryDD.printDropdown();
 
@@ -192,7 +194,7 @@ class Graphs
         _drawPanelBackground(panelX, panelY, panelW, panelH);
         _drawTitle(title, panelX, panelY, panelW);
     
-        float ddY = panelY + GRAPH_TITLE_H + (GRAPH_DROPDOWN_H - DROPDOWN_H) / 2.0;
+        float ddY = panelY + GRAPH_TITLE_H + (GRAPH_DROPDOWN_H - dropDowncellHeight) / 2.0;
         float dd1X = panelX + GRAPH_MARGIN;
         float dd2X = dd1X + GRAPH_DROPDOWN_W + GRAPH_DROPDOWN_GAP;
     
@@ -302,7 +304,7 @@ class Graphs
         _drawPanelBackground(panelX, panelY, panelW, panelH);
         _drawTitle(title, panelX, panelY, panelW);
 
-        float ddY  = panelY + GRAPH_TITLE_H + (GRAPH_DROPDOWN_H - DROPDOWN_H) / 2.0;
+        float ddY  = panelY + GRAPH_TITLE_H + (GRAPH_DROPDOWN_H - dropDowncellHeight) / 2.0;
         float dd1X = panelX + GRAPH_MARGIN;
         float dd2X = dd1X + GRAPH_DROPDOWN_W + GRAPH_DROPDOWN_GAP;
 
@@ -457,6 +459,12 @@ class Graphs
         barCategoryDD.printList(); // Added [cite: 117]
         barValueDD.printList();    // Added
     }
+
+    public void printDropdownBars()
+{
+  pieCategoryDD.printDropdown();
+  
+}
 
     public void mouseClicked()
     {

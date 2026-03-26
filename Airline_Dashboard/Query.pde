@@ -1,10 +1,7 @@
 public class Query
 {
-    private boolean isTextBoxSelected;
-    private int textBoxHeight = 40;
-    private int textBoxWidth = 500;
-    private int textBoxX;
-    private int textBoxY;
+    public int textBoxHeight = 40;
+    public int textBoxWidth = 500;
     private String userQuery = "";
     private boolean isKeyDepressed= false;
     //Checks whether a String occurs within a specified Array
@@ -41,7 +38,7 @@ public class Query
                 {
                     userQuery = userQuery.substring(0, userQuery.length()-1);
                 }
-                else if(key >= 'A' && key <= 'z' || key == ' ')
+                else if((key >= 'A' && key <= 'z') || key == ' ' || key == '/' || key == ',' || key == ':' || (key >= '0' && key <= '9'))
                 {
                     userQuery += key;
                 }
@@ -55,14 +52,17 @@ public class Query
         return userQuery;
     }
 
-    public void printQueryBox()
+    public void printQueryBox(float xPos, float yPos, Dropdown dropDown)
     {
+        float boxXPos=xPos-((textBoxWidth+dropDown.ddW)/2);
+        
+        dropDown.setPosition(boxXPos+textBoxWidth+10,yPos);
+
         stroke(0);
         fill(#a5a5a5a5);
-        rect(textBoxX, textBoxY, textBoxWidth, textBoxHeight, 10);
+        rect(boxXPos, yPos, textBoxWidth, textBoxHeight, 10);
         fill(0);
-        text("Query: " + userQuery, textBoxX+20, textBoxY+25);
-        print("Query: " + userQuery);
+        text("Query: " + userQuery, boxXPos+20, yPos+25);
     }
 
 
