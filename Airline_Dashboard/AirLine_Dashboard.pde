@@ -53,8 +53,12 @@ if(screenSelected == 1)
 }
 else if(screenSelected == 2)
 {
-  queryFlights.printWidget(ROWS_TO_DISPLAY);
+  query.textBoxX = 100;
+  query.textBoxY = 500;
   query.getUserQueryString();
+  query.printQueryBox();
+
+  queryFlights.printWidget(ROWS_TO_DISPLAY);
 }
 }
 
