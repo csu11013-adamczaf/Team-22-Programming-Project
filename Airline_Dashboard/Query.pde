@@ -5,8 +5,8 @@ public class Query
     private int textBoxWidth;
     private int textBoxX;
     private int tetBoxY;
-    private String userQuery;
-    private String typing = "";
+    private String userQuery = "";
+    private boolean isKeyDepressed= false;
     //Checks whether a String occurs within a specified Array
     public boolean exists(String searchTerm, String[] data)
     {
@@ -28,10 +28,35 @@ public class Query
         return exists(searchTerm, dataArray);
     }
 
-    private void getUserQueryString()
+    private String getUserQueryString()
     {
-        text("Query: " + typing, 500, 500);
-        print("Query");
+        fill(0);
+        textFont(loadFont(Visuals.QUERY_SEARCH_FONT));
+        text("Query: " + userQuery, 500, 500);
+        if(keyPressed == true)
+        {
+            if(!isKeyDepressed)
+            {
+                if(key == '\n')
+                {
+                    userQuery = "";
+                }
+                else if(key == '\b')
+                {
+
+                }
+                else
+                {
+                    isKeyDepressed = true;
+                    userQuery += key;
+                }
+            }
+        }
+        else
+        {
+            isKeyDepressed = false;
+        }
+        return userQuery;
     }
 
     public void isTextBoxSelected()
@@ -43,18 +68,5 @@ public class Query
     {
         
     }
-
-    void keyPressed()
-    { 
-        if (key == '\n')
-        {
-            userQuery = typing;
-            typing = "";
-        }
-        else
-        {
-            typing = typing + key;
-        }
-    }   
 
 }

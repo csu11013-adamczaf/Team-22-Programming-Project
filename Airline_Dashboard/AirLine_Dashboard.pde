@@ -54,7 +54,6 @@ if(screenSelected == 1)
 else if(screenSelected == 2)
 {
   queryFlights.printWidget(ROWS_TO_DISPLAY);
-  query.keyPressed();
   query.getUserQueryString();
 }
 }

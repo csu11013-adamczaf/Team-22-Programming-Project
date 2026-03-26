@@ -15,4 +15,7 @@ public class Visuals
   public static final int BUTTON_BUTTON_COLOUR = 200;
   public static final int SPACE_BETWEEN_BUTTONS = 10;
   public static final String BUTTON_BUTTON_FONT = "Button/button-font.vlw";
+
+  //Constants for Query Class
+  public static final String QUERY_SEARCH_FONT = "Query/search-font.vlw";
 }
