@@ -59,4 +59,3 @@ Flight Date,Carrier,Flight Number,Origin,Origin City,Origin State,Origin WAC,Des
 01/01/2022 00:00,AS,3,DCA,"Washington, DC",VA,38,SEA,"Seattle, WA",WA,93,1735,1814,2045,2136,0,0,2329
 01/01/2022 00:00,HA,3,LAX,"Los Angeles, CA",CA,91,HNL,"Honolulu, HI",HI,2,955,1040,1400,1433,0,0,2556
 01/01/2022 00:00,HA,LAST,LAX,"Los Angeles, CA",CA,91,HNL,"Honolulu, HI",HI,2,955,1040,1400,1433,0,0,2556
-01/01/2022 00:00,HA,LAST,LAX,"Los Angeles, CA",CA,91,HNL,"Honolulu, HI",HI,2,955,1040,1400,1433,0,0,2556
