@@ -8,6 +8,8 @@ Button screen1Button;
 Button screen2Button;
 Graphs graphs;
 int screenSelected;
+TableWidget queryFlights;
+Query query;
 
 //Sets up screen size & placement, background, creates TableWidget object and sets it x position.
 //Creates two buttons next to TableWidget object.
@@ -18,6 +20,7 @@ void setup()
   background(#ffffff);
   screenSelected = 1;
 
+  queryFlights = new TableWidget(new Table());
   flights = new TableWidget("flights-short.csv");
   flights.setXPos((width/2) - flights.getTableWidth()/2);
   prevButton = new Button(btnW, btnH, 0, 0);
@@ -25,6 +28,7 @@ void setup()
   screen1Button = new Button(btnW, btnH, (1920/2)-(2*btnW), 0);
   screen2Button = new Button(btnW, btnH, (1920/2)+btnW, 0);
   graphs = new Graphs(flights.getData(), ROWS_TO_DISPLAY);
+  query = new Query();
 }
 
 void draw()
@@ -35,7 +39,7 @@ void draw()
 
 
 
-if(screenSelected ==1)
+if(screenSelected == 1)
 {
   graphs.printPieChart();
   graphs.printBarChart();
@@ -46,6 +50,12 @@ if(screenSelected ==1)
   prevButton.printButton("Previous Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
   nextButton.printButton("Next Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
   flights.displayPageNumber(Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
+}
+else if(screenSelected == 2)
+{
+  queryFlights.printWidget(ROWS_TO_DISPLAY);
+  query.keyPressed();
+  query.getUserQueryString();
 }
 }
 

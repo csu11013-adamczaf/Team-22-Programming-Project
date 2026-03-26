@@ -43,6 +43,10 @@ class TableWidget
             }
         }
     }
+    TableWidget(Table flightData)
+    {
+        this.flightData = flightData;
+    }
 
     // Accessor methods for private variables;
     public int getMaxPage()
