@@ -1,8 +1,8 @@
-int dropDowncellHeight = 28;
+final int DROPDOWN_H = 28;
 final int DROPDOWN_ITEM_H = 26;
 final int DROPDOWN_PADDING_X = 10;
 final int DROPDOWN_CHEVRON_W = 20;
-final int DROPDOWN_MAX_ITEMS = 18;
+final int DROPDOWN_MAX_ITEMS = 8;
 
 class Dropdown
 {
@@ -21,16 +21,15 @@ class Dropdown
     private final color COL_LIST_SEL = #4E79A7;
     private final color COL_TEXT = #FFFFFF;
     private final color COL_BORDER = #4A6080;
-    private int textSize = 11;
 
-    Dropdown(float x, float y, float w, String[] labels, int[] columnIndices, PFont ddFont)
+    Dropdown(float x, float y, float w, String[] labels, int[] columnIndices)
     {
         this.ddX = x;
         this.ddY = y;
         this.ddW = w;
         this.labels = labels;
         this.columnIndices = columnIndices;
-        this.ddFont = ddFont;
+        this.ddFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
     }
 
     public int getSelectedIndex()
@@ -60,25 +59,25 @@ class Dropdown
 
         noStroke();
         fill(hoveringBar ? COL_BAR_BG_HOVER : COL_BAR_BG);
-        rect(ddX, ddY, ddW,dropDowncellHeight, 4);
+        rect(ddX, ddY, ddW, DROPDOWN_H, 4);
 
         stroke(COL_BORDER);
         strokeWeight(1);
         noFill();
-        rect(ddX, ddY, ddW, dropDowncellHeight, 4);
+        rect(ddX, ddY, ddW, DROPDOWN_H, 4);
 
         noStroke();
         fill(COL_TEXT);
         textFont(ddFont);
-        textSize(this.textSize);
+        textSize(11);
         textAlign(LEFT, CENTER);
 
         String label = _truncate(labels[selectedItem], ddW - DROPDOWN_CHEVRON_W - 2 * DROPDOWN_PADDING_X);
-        text(label, ddX + DROPDOWN_PADDING_X, ddY + dropDowncellHeight / 2.0);
+        text(label, ddX + DROPDOWN_PADDING_X, ddY + DROPDOWN_H / 2.0);
 
         fill(COL_TEXT);
         textAlign(CENTER, CENTER);
-        text(isOpen ? "▲" : "▼", ddX + ddW - DROPDOWN_CHEVRON_W / 2.0, ddY + dropDowncellHeight / 2.0);
+        text(isOpen ? "▲" : "▼", ddX + ddW - DROPDOWN_CHEVRON_W / 2.0, ddY + DROPDOWN_H / 2.0);
 
         textAlign(LEFT, BASELINE);
     }
@@ -89,7 +88,7 @@ class Dropdown
 
         int visibleCount = min(labels.length, DROPDOWN_MAX_ITEMS);
         float listH = visibleCount * DROPDOWN_ITEM_H;
-        float listY = ddY + dropDowncellHeight;
+        float listY = ddY + DROPDOWN_H;
 
         stroke(COL_BORDER);
         strokeWeight(1);
@@ -97,7 +96,7 @@ class Dropdown
         rect(ddX, listY, ddW, listH, 0, 0, 4, 4);
 
         textFont(ddFont);
-        textSize(this.textSize);
+        textSize(11);
         textAlign(LEFT, CENTER);
 
         for (int i = 0; i < visibleCount; i++)
@@ -153,23 +152,14 @@ class Dropdown
         }
     }
 
-    public void setTextSize(int size)
-    {
-        this.textSize = size;
-    }
-    public void setCellHeight(int size)
-    {
-        dropDowncellHeight = size;
-    }
-
     private boolean _hoveringBar()
     {
-        return mouseX > ddX && mouseX < ddX + ddW && mouseY > ddY && mouseY < ddY + dropDowncellHeight;
+        return mouseX > ddX && mouseX < ddX + ddW && mouseY > ddY && mouseY < ddY + DROPDOWN_H;
     }
 
     private boolean _hoveringListItem(int i)
     {
-        float listY = ddY + dropDowncellHeight;
+        float listY = ddY + DROPDOWN_H;
         float rowY  = listY + i * DROPDOWN_ITEM_H;
         return mouseX > ddX && mouseX < ddX + ddW && mouseY > rowY && mouseY < rowY + DROPDOWN_ITEM_H;
     }
@@ -180,5 +170,4 @@ class Dropdown
         if (s.length() <= maxChars) return s;
         return s.substring(0, max(0, maxChars - 1)) + "…";
     }
-
 }

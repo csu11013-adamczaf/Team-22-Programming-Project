@@ -1,10 +1,36 @@
+final int[] COLS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
+
 public class Query
 {
     public int textBoxHeight = 40;
     public int textBoxWidth = 500;
+    private Table data;
     private String userQuery = "";
-    private boolean isKeyDepressed= false;
+    private boolean isKeyDepressed = false;
     //Checks whether a String occurs within a specified Array
+    private Dropdown queryDD;
+    
+    Query(Table data)
+    {
+        this.data = data;
+        _initDropdowns();
+    }
+    
+    private void _initDropdowns()
+    {
+        String[] queryLabels  = new String[COLS.length];
+        int[]    queryIndices = new int[COLS.length];
+        
+        for (int i = 0; i < COLS.length; i++)
+        {
+            queryIndices[i] = CATEGORICAL_COLS[i];
+            queryLabels[i]  = data.getString(0, COLS[i]);
+        }
+
+        queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices);
+
+    }
+    
     public boolean exists(String searchTerm, String[] data)
     {
         boolean isValuePresent = false;
@@ -29,7 +55,6 @@ public class Query
     private String getUserQueryString()
     {
         fill(0);
-        textFont(loadFont(Visuals.QUERY_SEARCH_FONT));
         if(keyPressed == true)
         {
             if(!isKeyDepressed)
@@ -49,15 +74,18 @@ public class Query
         {
             isKeyDepressed = false;
         }
+        
         return userQuery;
     }
 
-    public void printQueryBox(float xPos, float yPos, Dropdown dropDown)
+    public void printQueryBox(float xPos, float yPos)
     {
         String searchbyString = "Search through: ";
-        float widgetWidth = textBoxWidth+60+dropDown.ddW+textWidth(searchbyString);
-        float boxXPos=xPos-((widgetWidth)/2);
-        dropDown.setPosition(boxXPos+textBoxWidth+textWidth(searchbyString)+20,yPos);
+        float widgetWidth = textBoxWidth + 60 + queryDD.ddW + textWidth(searchbyString);
+        float boxXPos = xPos - ((widgetWidth)/2);
+        queryDD.setPosition(boxXPos + textBoxWidth + textWidth(searchbyString) + 20, yPos);
+        queryDD.printDropdown();
+        queryDD.printList();
 
         fill(#D8D8D8);
         rect(boxXPos-20, yPos-20, widgetWidth, textBoxHeight+40, 10);
@@ -69,6 +97,4 @@ public class Query
         text(searchbyString, boxXPos+20+textBoxWidth, yPos+28);
         rect(boxXPos+20+textWidth("Search for: "+ userQuery), yPos+8, 1,23);
     }
-
-
 }

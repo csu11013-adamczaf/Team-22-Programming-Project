@@ -1,101 +1,151 @@
 float btnW = 80;
 float btnH = 30;
-int ROWS_TO_DISPLAY = 10;
+int   ROWS_TO_DISPLAY = 10;
+
 TableWidget flights;
 Button prevButton;
 Button nextButton;
-Button screen1Button;
-Button screen2Button;
 Graphs graphs;
-int screenSelected;
-TableWidget queryFlights;
 Query query;
-Dropdown queryDD;
 
-//Sets up screen size & placement, background, creates TableWidget object and sets it x position.
-//Creates two buttons next to TableWidget object.
+OverviewScreen overviewScreen;
+QueryScreen queryScreen;
+MapScreen mapScreen;
+//DelaysScreen delaysScreen;
+Screen currentScreen;
+int currentScreenIdx = 0;
+
+//final String[] SCREEN_NAMES  = { "Overview", "Routes", "Airlines", "Delays" };
+final String[] SCREEN_NAMES  = { "Overview", "Query", "Map" };
+PFont navFont;
+PFont navTitleFont;
+
 void setup()
 {
-  size(1920, 1080, P2D);
-  surface.setLocation(-1, -1);
-  background(#ffffff);
-  screenSelected = 1;
+    size(1920, 1080, P2D);
+    surface.setLocation(-1, -1);
+    background(Visuals.BACKGROUND);
 
-  flights = new TableWidget("flights-short.csv");
-  flights.setXPos((width/2) - flights.getTableWidth()/2);
-  prevButton = new Button(btnW, btnH, 0, 0);
-  nextButton = new Button(btnW, btnH, 0, 0);
-  screen1Button = new Button(btnW, btnH, (1920/2)-(2*btnW), 0);
-  screen2Button = new Button(btnW, btnH, (1920/2)+btnW, 0);
-  graphs = new Graphs(flights.getData(), ROWS_TO_DISPLAY);
-  query = new Query();
-  String[] queryLabels = {"Flight Date", "Carrier", "Flight Number", "Origin", "Origin City", "Origin State", "Origin WAC", "Destination", "Destination City", "Destination State", "Destination WAC", "CRS_DEP_TIME", "Departure Time", "CRS_ARR_TIME", "Arrival Time", "Cancelled", "Diverted", "Distance"};
-  int[] queryIndices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
-  queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices, loadFont(Visuals.QUERY_SEARCH_FONT));
+    navFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
+    navTitleFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
+
+    flights = new TableWidget("flights2k.csv");
+    flights.setXPos((width / 2) - flights.getTableWidth() / 2);
+    prevButton = new Button(btnW, btnH, 0, 0);
+    nextButton = new Button(btnW, btnH, 0, 0);
+    graphs = new Graphs(flights.getData(), ROWS_TO_DISPLAY);
+    query = new Query(flights.getData());
+
+
+    overviewScreen = new OverviewScreen(graphs, flights, prevButton, nextButton, ROWS_TO_DISPLAY);
+    queryScreen = new QueryScreen();
+    mapScreen  = new MapScreen();
+    
+    //delaysScreen    = new DelaysScreen();
+
+    currentScreen = overviewScreen;
 }
 
 void draw()
 {
-  frameRate(30);
-  background(#ffffff);
-  screen1Button.printButton("Home", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
-  screen2Button.printButton("Query Tab", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
-
-  flights.printWidget(ROWS_TO_DISPLAY, prevButton, nextButton);
-  prevButton.printButton("Previous Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
-  nextButton.printButton("Next Page", Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
-  flights.displayPageNumber(Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
-
-if(screenSelected == 1)
-{
-  graphs.printPieChart();
-  graphs.printBarChart();
-  graphs.printLineChart();
-  graphs.printDropdownLists();
-
-}
-else if(screenSelected == 2)
-{
-
-  flights.displayResultsCount(Visuals.BUTTON_BUTTON_COLOUR, Visuals.GLOBAL_TEXT_COLOUR_DARK);
-  
-  query.getUserQueryString();
-  query.printQueryBox(1920/2,500, queryDD);
-  queryDD.setTextSize(20);
-  queryDD.setCellHeight(query.textBoxHeight);
-  queryDD.printDropdown();
-  queryDD.printList();
-}
+    background(Visuals.BACKGROUND);
+    currentScreen.draw();
+    _drawNavbar();
 }
 
 void mousePressed()
 {
-  graphs.mouseClicked();
-  queryDD.mouseClicked();
-
-  if(screenSelected == 1 && screen2Button.buttonPressed())
-  {
-    screenSelected = 2;
-  }
-  else if(screenSelected ==2 && screen1Button.buttonPressed())
-  {
-    screenSelected = 1;
-  }
-
-  if (nextButton.buttonPressed())
-  {
-    flights.nextPage();
-  }
-
-  if (prevButton.buttonPressed())
-  {
-    if (flights.getCurrentPage() > 0)
+    int clicked = _navbarTabAt(mouseX, mouseY);
+    if (clicked >= 0)
     {
-      flights.previousPage();
+        _switchScreen(clicked);
+        return;
     }
-    else
+
+    currentScreen.mousePressed();
+}
+
+void _drawNavbar()
+{
+    int navH = Visuals.NAVBAR_H;
+
+    noStroke();
+    fill(Visuals.NAVBAR_BG);
+    rect(0, 0, width, navH);
+
+    stroke(Visuals.NAVBAR_BORDER);
+    strokeWeight(1);
+    line(0, navH, width, navH);
+
+    fill(Visuals.NAVBAR_TITLE_COLOUR);
+    textFont(navTitleFont);
+    textSize(Visuals.NAVBAR_TITLE_SIZE);
+    textAlign(LEFT, CENTER);
+
+    noStroke();
+    fill(Visuals.ACCENT);
+    ellipse(28, navH / 2.0, 8, 8);
+
+    fill(Visuals.NAVBAR_TITLE_COLOUR);
+    text("Airline Dashboard", 42, navH / 2.0);
+
+
+    float tabStartX = 320;
+
+    textFont(navFont);
+    textSize(13);
+
+    for (int i = 0; i < SCREEN_NAMES.length; i++)
     {
-      flights.setCurrentPage(flights.getMaxPage());
+        float tx = tabStartX + i * Visuals.TAB_W;
+        boolean active = (i == currentScreenIdx);
+        boolean hover  = (_navbarTabAt(mouseX, mouseY) == i);
+
+        if (hover && !active)
+        {
+            noStroke();
+            fill(Visuals.TAB_HOVER_BG);
+            rect(tx, 0, Visuals.TAB_W, navH);
+        }
+
+        fill(active ? Visuals.TAB_TEXT_ACTIVE : Visuals.TAB_TEXT_IDLE);
+        textAlign(CENTER, CENTER);
+        text(SCREEN_NAMES[i], tx + Visuals.TAB_W / 2.0, navH / 2.0);
+
+        if (active)
+        {
+            noStroke();
+            fill(Visuals.TAB_INDICATOR);
+            rect(tx + 16, navH - Visuals.TAB_INDICATOR_H,
+                 Visuals.TAB_W - 32, Visuals.TAB_INDICATOR_H, 2);
+        }
     }
-  }
+
+    textAlign(LEFT, BASELINE);
+    strokeWeight(1);
+}
+
+int _navbarTabAt(float mx, float my)
+{
+    if (my < 0 || my > Visuals.NAVBAR_H) return -1;
+    float tabStartX = 320;
+    for (int i = 0; i < SCREEN_NAMES.length; i++)
+    {
+        float tx = tabStartX + i * Visuals.TAB_W;
+        if (mx >= tx && mx < tx + Visuals.TAB_W) return i;
+    }
+    return -1;
+}
+
+void _switchScreen(int idx)
+{
+    currentScreenIdx = idx;
+    switch (idx)
+    {
+        case 0:  currentScreen = overviewScreen;  break;
+        case 1:  currentScreen = queryScreen;    break;
+        case 2:  currentScreen = mapScreen;  break;
+        //case 3:  currentScreen = delaysScreen;    break;
+        default: currentScreen = overviewScreen;
+    }
 }

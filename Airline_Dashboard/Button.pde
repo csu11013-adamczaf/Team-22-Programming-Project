@@ -23,7 +23,7 @@ class Button
   {
     hoverButton();
     int textLength = text.length()*5;
-    btnW = (this.btnW >= textLength + 2*BUTTON_PADDING ? this.btnW : textLength + 2*BUTTON_PADDING);
+    btnW = textLength + 2*BUTTON_PADDING;
     fill(fillColor);
     stroke(strokeColour);
     rect(btnX, btnY, btnW, btnH, 5);
