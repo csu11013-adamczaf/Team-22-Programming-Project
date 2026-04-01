@@ -59,6 +59,7 @@ public class Visuals
     public static final String TABLEWIDGET_TABLE_FONT  = "TableWidget/table-font.vlw";
     public static final String TABLEWIDGET_HEADER_FONT = "TableWidget/header-font.vlw";
     public static final String BUTTON_BUTTON_FONT      = "Button/button-font.vlw";
+    public static final String QUERY_SEARCH_FONT       = "Query/search-font.vlw";
 
     // ── Legacy constants kept for backward compatibility ──────────────────────
     public static final int  BUTTON_BUTTON_COLOUR      = #1E3A5F;

@@ -23,11 +23,14 @@ public class Query
         
         for (int i = 0; i < COLS.length; i++)
         {
-            queryIndices[i] = CATEGORICAL_COLS[i];
+            if(i<11)
+            {
+                queryIndices[i] = CATEGORICAL_COLS[i];
+            }
             queryLabels[i]  = data.getString(0, COLS[i]);
         }
 
-        queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices);
+        queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices, GRAPH_FONT);
 
     }
     
@@ -78,14 +81,13 @@ public class Query
         return userQuery;
     }
 
-    public void printQueryBox(float xPos, float yPos)
+        public void printQueryBox(float xPos, float yPos, Dropdown dropDown)
     {
+        textFont(loadFont(Visuals.QUERY_SEARCH_FONT));
         String searchbyString = "Search through: ";
-        float widgetWidth = textBoxWidth + 60 + queryDD.ddW + textWidth(searchbyString);
-        float boxXPos = xPos - ((widgetWidth)/2);
-        queryDD.setPosition(boxXPos + textBoxWidth + textWidth(searchbyString) + 20, yPos);
-        queryDD.printDropdown();
-        queryDD.printList();
+        float widgetWidth = textBoxWidth+60+dropDown.ddW+textWidth(searchbyString);
+        float boxXPos=xPos-((widgetWidth)/2);
+        dropDown.setPosition(boxXPos+textBoxWidth+textWidth(searchbyString)+20,yPos);
 
         fill(#D8D8D8);
         rect(boxXPos-20, yPos-20, widgetWidth, textBoxHeight+40, 10);

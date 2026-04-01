@@ -1,3 +1,5 @@
+int dropDowncellHeight = 28;
+
 final int DROPDOWN_H = 28;
 final int DROPDOWN_ITEM_H = 26;
 final int DROPDOWN_PADDING_X = 10;
@@ -21,8 +23,9 @@ class Dropdown
     private final color COL_LIST_SEL = #4E79A7;
     private final color COL_TEXT = #FFFFFF;
     private final color COL_BORDER = #4A6080;
+    private int textSize = 11;
 
-    Dropdown(float x, float y, float w, String[] labels, int[] columnIndices)
+    Dropdown(float x, float y, float w, String[] labels, int[] columnIndices, PFont ddFont)
     {
         this.ddX = x;
         this.ddY = y;
@@ -53,31 +56,31 @@ class Dropdown
         this.ddY = y;
     }
 
-    public void printDropdown()
+        public void printDropdown()
     {
         boolean hoveringBar = _hoveringBar();
 
         noStroke();
         fill(hoveringBar ? COL_BAR_BG_HOVER : COL_BAR_BG);
-        rect(ddX, ddY, ddW, DROPDOWN_H, 4);
+        rect(ddX, ddY, ddW,dropDowncellHeight, 4);
 
         stroke(COL_BORDER);
         strokeWeight(1);
         noFill();
-        rect(ddX, ddY, ddW, DROPDOWN_H, 4);
+        rect(ddX, ddY, ddW, dropDowncellHeight, 4);
 
         noStroke();
         fill(COL_TEXT);
         textFont(ddFont);
-        textSize(11);
+        textSize(this.textSize);
         textAlign(LEFT, CENTER);
 
         String label = _truncate(labels[selectedItem], ddW - DROPDOWN_CHEVRON_W - 2 * DROPDOWN_PADDING_X);
-        text(label, ddX + DROPDOWN_PADDING_X, ddY + DROPDOWN_H / 2.0);
+        text(label, ddX + DROPDOWN_PADDING_X, ddY + dropDowncellHeight / 2.0);
 
         fill(COL_TEXT);
         textAlign(CENTER, CENTER);
-        text(isOpen ? "▲" : "▼", ddX + ddW - DROPDOWN_CHEVRON_W / 2.0, ddY + DROPDOWN_H / 2.0);
+        text(isOpen ? "▲" : "▼", ddX + ddW - DROPDOWN_CHEVRON_W / 2.0, ddY + dropDowncellHeight / 2.0);
 
         textAlign(LEFT, BASELINE);
     }
@@ -88,7 +91,7 @@ class Dropdown
 
         int visibleCount = min(labels.length, DROPDOWN_MAX_ITEMS);
         float listH = visibleCount * DROPDOWN_ITEM_H;
-        float listY = ddY + DROPDOWN_H;
+        float listY = ddY + dropDowncellHeight;
 
         stroke(COL_BORDER);
         strokeWeight(1);
@@ -96,7 +99,7 @@ class Dropdown
         rect(ddX, listY, ddW, listH, 0, 0, 4, 4);
 
         textFont(ddFont);
-        textSize(11);
+        textSize(this.textSize);
         textAlign(LEFT, CENTER);
 
         for (int i = 0; i < visibleCount; i++)
@@ -150,6 +153,15 @@ class Dropdown
 
             isOpen = false;
         }
+    }
+
+    public void setTextSize(int size)
+    {
+        this.textSize = size;
+    }
+    public void setCellHeight(int size)
+    {
+        dropDowncellHeight = size;
     }
 
     private boolean _hoveringBar()

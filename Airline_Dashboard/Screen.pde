@@ -53,17 +53,30 @@ class OverviewScreen extends Screen
 class QueryScreen extends Screen
 {
     private PFont font;
+    Dropdown queryDD;
 
     QueryScreen()
     {
         this.font = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
+        String[] queryLabels = {"Flight Date", "Carrier", "Flight Number", "Origin", "Origin City", "Origin State", "Origin WAC", "Destination", "Destination City", "Destination State", "Destination WAC", "CRS_DEP_TIME", "Departure Time", "CRS_ARR_TIME", "Arrival Time", "Cancelled", "Diverted", "Distance"};
+        int[] queryIndices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
+        queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices, loadFont(Visuals.QUERY_SEARCH_FONT));
     }
 
     public void draw()
     {
         _drawPlaceholder("Query", "Query search function coming soon.");
         query.getUserQueryString();
-        query.printQueryBox(1920/2, 500);
+        query.printQueryBox(1920/2, 500, queryDD);
+        queryDD.setTextSize(15);
+        queryDD.setCellHeight(query.textBoxHeight);
+        queryDD.printDropdown();
+        queryDD.printList();
+    }
+
+    void mousePressed()
+    {
+        queryDD.mouseClicked();
     }
 }
 

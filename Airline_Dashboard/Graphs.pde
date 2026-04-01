@@ -17,6 +17,7 @@ final int GRAPH_TITLE_SIZE   = 15;
 final int GRAPH_DROPDOWN_W   = 200;
 final int GRAPH_DROPDOWN_GAP = 8;
 final int GRAPH_POINT_PAD    = 30;
+PFont GRAPH_FONT;
 
 final int GRAPH_PANEL_Y = Visuals.NAVBAR_H + 8;
 
@@ -44,6 +45,7 @@ class Graphs
         this.numberOfRows = numberOfRows;
         this.graphFont    = loadFont(Visuals.TABLEWIDGET_TABLE_FONT);
         this.titleFont    = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
+        GRAPH_FONT = loadFont(Visuals.BUTTON_BUTTON_FONT);
         _initDropdowns();
     }
 
@@ -65,11 +67,11 @@ class Graphs
             numLabels[i]  = data.getString(0, NUMERICAL_COLS[i]);
         }
 
-        pieCategoryDD  = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices);
-        lineCategoryDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices);
-        lineValueDD    = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices);
-        barCategoryDD  = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices);
-        barValueDD     = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices);
+        pieCategoryDD  = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices, GRAPH_FONT);
+        lineCategoryDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices, GRAPH_FONT);
+        lineValueDD    = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices, GRAPH_FONT);
+        barCategoryDD  = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices, GRAPH_FONT);
+        barValueDD     = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices, GRAPH_FONT);
     }
 
     private float tableTopY()
