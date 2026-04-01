@@ -44,8 +44,9 @@ class TableWidget
         }
     }
 
-    TableWidget(Table table)
+    TableWidget(Table table, float xPos)
     {
+        this.xPos = xPos;
         this.flightData = table;
         tableFont = loadFont(Visuals.TABLEWIDGET_TABLE_FONT);
         headerFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);

@@ -2,6 +2,10 @@
 // All colours, fonts, sizes, and spacing live here.
 public class Visuals
 {
+
+    // ── Global Data ─────────────────────────────────────────────────────
+    public static final String DATA                = "flights2k.csv";
+
     // ── Global background ─────────────────────────────────────────────────────
     public static final int  BACKGROUND            = #0B1120;   // deep navy page bg
 

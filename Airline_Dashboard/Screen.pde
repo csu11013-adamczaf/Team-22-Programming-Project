@@ -1,7 +1,3 @@
-    String queryScreenCurrentQuery;
-    String queryScreenDropDownLabel;
-    int queryScreenDropDownIndex;
-
 class Screen
 {
     public void draw() {}
@@ -15,6 +11,8 @@ class OverviewScreen extends Screen
     private Button prevButton;
     private Button nextButton;
     private int rowsToDisplay;
+
+    
 
     OverviewScreen(Graphs graphs, TableWidget flights, Button prevButton, Button nextButton, int rowsToDisplay)
     {
@@ -56,46 +54,69 @@ class OverviewScreen extends Screen
 
 class QueryScreen extends Screen
 {
-    private PFont font;
-    Dropdown queryDD;
-    String lastQuery = "";
-    TableWidget queryFlights = new TableWidget("flights-short.csv");
+    private Dropdown queryDD;
+    private String lastQuery = "";
+    private int lastIndex = 0;
+    private boolean lastDivertedValue;
+    private boolean lastCancelledValue;
+    private TableWidget queryFlights;
+    private CheckBox divertedBox;
+    private CheckBox cancelledBox;
+
     
 
     QueryScreen()
     {
-        this.font = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
         String[] queryLabels = {"Flight Date", "Carrier", "Flight Number", "Origin", "Origin City", "Origin State", "Origin WAC", "Destination", "Destination City", "Destination State", "Destination WAC", "CRS_DEP_TIME", "Departure Time", "CRS_ARR_TIME", "Arrival Time", "Cancelled", "Diverted", "Distance"};
         int[] queryIndices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
         queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices, loadFont(Visuals.QUERY_SEARCH_FONT));
+        queryFlights = new TableWidget(Visuals.DATA);
+        queryFlights.setXPos((width / 2) - queryFlights.getTableWidth() / 2);
+        divertedBox = new CheckBox(query.boxXPos, query.boxYPos+41, "Show Diverted?");
+        cancelledBox = new CheckBox(query.boxXPos, query.boxYPos+41, "Show Cancelled?");
     }
 
     public void draw()
     {
-        _drawPlaceholder("Query", "Query search function coming soon.");
+
+        // Only filter when the text actually changes
+
+        if (!(query.userQuery).equals(lastQuery) || (lastIndex != queryDD.getSelectedIndex()) 
+            || lastDivertedValue != divertedBox.enabled || lastCancelledValue != cancelledBox.enabled) 
+        {
+            Table filtered = filterFlights(query.userQuery, divertedBox, cancelledBox);
+            queryFlights = new TableWidget(filtered, ((width / 2) - flights.getTableWidth() / 2));
+            lastQuery = query.userQuery;
+            lastIndex = queryDD.getSelectedIndex();
+            lastDivertedValue = divertedBox.enabled;
+            lastCancelledValue = cancelledBox.enabled;
+        }
+
+        prevButton.printButton("Previous Page", Visuals.BTN_BG, Visuals.BTN_TEXT);
+        nextButton.printButton("Next Page", Visuals.BTN_BG, Visuals.BTN_TEXT);
+        queryFlights.displayPageNumber(Visuals.BTN_BG, Visuals.BTN_TEXT);
+
+        queryFlights.printWidget(ROWS_TO_DISPLAY, prevButton, nextButton);
+
+        //_drawPlaceholder("Query", "Query search function coming soon.");
         query.getUserQueryString();
-        query.printQueryBox(1920/2, 500, queryDD);
+        query.printQueryBox(1920/2, 550, queryDD);
         queryDD.setTextSize(15);
         queryDD.setCellHeight(query.textBoxHeight);
         queryDD.printDropdown();
         queryDD.printList();
-        queryScreenCurrentQuery = query.userQuery;
-        queryScreenDropDownIndex = queryDD.getSelectedIndex();
-        queryScreenDropDownLabel = queryDD.getSelectedLabel();
 
-        // Only filter when the text actually changes
+        divertedBox.xPos = query.boxXPos;
+        divertedBox.yPos = query.boxYPos+60;
+        divertedBox.draw();
 
-        if (!queryScreenCurrentQuery.equals(lastQuery)) {
-        Table filtered = filterFlights(queryScreenCurrentQuery);
-        queryFlights = new TableWidget(filtered);
-        lastQuery = queryScreenCurrentQuery;
-        }
-
-        queryFlights.printWidget(ROWS_TO_DISPLAY);
+        cancelledBox.xPos = divertedBox.xPos+divertedBox.width+textWidth(divertedBox.text)+30;
+        cancelledBox.yPos = divertedBox.yPos;
+        cancelledBox.draw();
         
     }
 
-    Table filterFlights(String sentence)
+    Table filterFlights(String sentence, CheckBox diverted, CheckBox cancelled)
     {
         Table all = flights.getData();
         Table filtered = new Table();
@@ -111,7 +132,7 @@ class QueryScreen extends Screen
             header.setString(c, all.getString(0, c));
         }
 
-        int col = queryScreenDropDownIndex;
+        int col = queryDD.getSelectedIndex();
 
         for (int r = 1; r < all.getRowCount(); r++) 
         {
@@ -120,10 +141,17 @@ class QueryScreen extends Screen
 
             if (cell.toLowerCase().contains(sentence.toLowerCase())) 
             {
-                TableRow newRow = filtered.addRow();
-                for (int c = 0; c < all.getColumnCount(); c++) 
+                //Check if boxes are enabled and filter results if not
+                if(diverted.enabled || ((all.getString(r, 16).equals("NO") && !diverted.enabled)))
                 {
-                    newRow.setString(c, all.getString(r, c));
+                    if(cancelled.enabled || ((all.getString(r, 15).equals("NO") && !cancelled.enabled)))
+                    {
+                        TableRow newRow = filtered.addRow();
+                        for (int c = 0; c < all.getColumnCount(); c++) 
+                        {
+                            newRow.setString(c, all.getString(r, c));
+                        }
+                    }
                 }
             }
         }
@@ -133,7 +161,19 @@ class QueryScreen extends Screen
 
     void mousePressed()
     {
+        divertedBox.mouseClicked();
+        cancelledBox.mouseClicked();
         queryDD.mouseClicked();
+
+        if (nextButton.buttonPressed()) queryFlights.nextPage();
+
+        if (prevButton.buttonPressed())
+        {
+            if (queryFlights.getCurrentPage() > 0)
+                queryFlights.previousPage();
+            else
+                queryFlights.setCurrentPage(flights.getMaxPage());
+        }
     }
 }
 

@@ -4,7 +4,7 @@ final int DROPDOWN_H = 28;
 final int DROPDOWN_ITEM_H = 26;
 final int DROPDOWN_PADDING_X = 10;
 final int DROPDOWN_CHEVRON_W = 20;
-final int DROPDOWN_MAX_ITEMS = 8;
+final int DROPDOWN_MAX_ITEMS = 17;
 
 class Dropdown
 {
