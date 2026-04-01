@@ -44,6 +44,14 @@ class TableWidget
         }
     }
 
+    TableWidget(Table table)
+    {
+        this.flightData = table;
+        tableFont = loadFont(Visuals.TABLEWIDGET_TABLE_FONT);
+        headerFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
+
+    }
+
     // Accessor methods for private variables;
     public int getMaxPage()
     {

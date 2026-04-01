@@ -99,4 +99,8 @@ public class Query
         text(searchbyString, boxXPos+20+textBoxWidth, yPos+28);
         rect(boxXPos+20+textWidth("Search for: "+ userQuery), yPos+8, 1,23);
     }
+
+      public int getSelectedColumn() {
+        return queryDD.getSelectedIndex();
+    }
 }

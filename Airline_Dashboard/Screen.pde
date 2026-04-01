@@ -58,6 +58,8 @@ class QueryScreen extends Screen
 {
     private PFont font;
     Dropdown queryDD;
+    String lastQuery = "";
+    TableWidget queryFlights = new TableWidget("flights-short.csv");
     
 
     QueryScreen()
@@ -80,6 +82,53 @@ class QueryScreen extends Screen
         queryScreenCurrentQuery = query.userQuery;
         queryScreenDropDownIndex = queryDD.getSelectedIndex();
         queryScreenDropDownLabel = queryDD.getSelectedLabel();
+
+        // Only filter when the text actually changes
+
+        if (!queryScreenCurrentQuery.equals(lastQuery)) {
+        Table filtered = filterFlights(queryScreenCurrentQuery);
+        queryFlights = new TableWidget(filtered);
+        lastQuery = queryScreenCurrentQuery;
+        }
+
+        queryFlights.printWidget(ROWS_TO_DISPLAY);
+        
+    }
+
+    Table filterFlights(String sentence)
+    {
+        Table all = flights.getData();
+        Table filtered = new Table();
+
+        // copy column titles
+        for (int c = 0; c < all.getColumnCount(); c++) 
+        {
+            filtered.addColumn(all.getColumnTitle(c));
+        }
+        TableRow header = filtered.addRow();
+        for (int c = 0; c < all.getColumnCount(); c++) 
+        {
+            header.setString(c, all.getString(0, c));
+        }
+
+        int col = queryScreenDropDownIndex;
+
+        for (int r = 1; r < all.getRowCount(); r++) 
+        {
+
+        String cell = all.getString(r, col);
+
+            if (cell.toLowerCase().contains(sentence.toLowerCase())) 
+            {
+                TableRow newRow = filtered.addRow();
+                for (int c = 0; c < all.getColumnCount(); c++) 
+                {
+                    newRow.setString(c, all.getString(r, c));
+                }
+            }
+        }
+
+        return filtered;
     }
 
     void mousePressed()
