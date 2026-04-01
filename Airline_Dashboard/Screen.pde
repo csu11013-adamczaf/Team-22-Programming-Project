@@ -172,7 +172,7 @@ class QueryScreen extends Screen
             if (queryFlights.getCurrentPage() > 0)
                 queryFlights.previousPage();
             else
-                queryFlights.setCurrentPage(flights.getMaxPage());
+                queryFlights.setCurrentPage(queryFlights.getMaxPage());
         }
     }
 }

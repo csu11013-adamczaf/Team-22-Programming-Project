@@ -21,7 +21,7 @@ class TableWidget
     private int maxPageNumber;
     private int numberOfFlightsToDisplay;
     private Table flightData;
-    private float tableWidth = getColumnOffset(18);
+    private float tableWidth;
     private float tableHeight;
 
     // Creates a table widget object with parameters, sets up required fonts.
@@ -143,6 +143,8 @@ class TableWidget
     // Sets table height and number of pages based on number of flights to be displayed.
     public void printWidget(int numberOfFlightsToDisplay)
     {
+        tableWidth = getColumnOffset(18);
+        flights.setXPos((width / 2) - flights.getTableWidth() / 2);
         this.numberOfFlightsToDisplay = numberOfFlightsToDisplay;
         maxPageNumber = (flightData.getRowCount() / numberOfFlightsToDisplay) - 1;
         tableHeight = (numberOfFlightsToDisplay * ROW_HEIGHT) + HEADER_HEIGHT;
@@ -237,11 +239,23 @@ class TableWidget
             case 1:  return 50;
             case 2:  return 80;
             case 3:  return 60;
-            case 4:  return 130;
+            case 4:  int startRow4    = (currentPage == 0) ? 1 : currentPage * numberOfFlightsToDisplay + 1;
+                     float width4 = 0;
+                     for(int row = startRow4; row <= (currentPage + 1) * numberOfFlightsToDisplay && row < flightData.getRowCount(); row++)
+                     {
+                        width4 = (width4 > textWidth(flightData.getString(row, 4)) ? width4 : textWidth(flightData.getString(row, 4)));
+                     }
+            return (int) (width4+20 > 130 ? width4+20 : 130);
             case 5:  return 80;
             case 6:  return 70;
             case 7:  return 80;
-            case 8:  return 130;
+            case 8:  int startRow8    = (currentPage == 0) ? 1 : currentPage * numberOfFlightsToDisplay + 1;
+                     float width8 = 0;
+                     for(int row = startRow8; row <= (currentPage + 1) * numberOfFlightsToDisplay && row < flightData.getRowCount(); row++)
+                     {
+                        width8 = (width8 > textWidth(flightData.getString(row, 8)) ? width8 : textWidth(flightData.getString(row, 8)));
+                     }
+            return (int) (width8+20 > 130 ? width8+20 : 130);
             case 9:  return 100;
             case 10: return 90;
             case 11: return 90;
