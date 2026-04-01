@@ -97,6 +97,14 @@ class QueryScreen extends Screen
         queryFlights.displayPageNumber(Visuals.BTN_BG, Visuals.BTN_TEXT);
 
         queryFlights.printWidget(ROWS_TO_DISPLAY, prevButton, nextButton);
+        if(queryFlights.flightData.getRowCount()==1)
+        {
+            queryFlights.currentPage = 0;
+            textFont(loadFont(Visuals.QUERY_SEARCH_FONT));
+            textSize(40);
+            String emptyTable = "No records match the search criteria";
+            text(emptyTable,(queryFlights.getXPos()+queryFlights.tableWidth/2-textWidth(emptyTable)/2),queryFlights.yPos+queryFlights.tableHeight/2+textAscent());
+        }
 
         //_drawPlaceholder("Query", "Query search function coming soon.");
         query.getUserQueryString();
