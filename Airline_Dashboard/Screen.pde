@@ -1,3 +1,7 @@
+    String queryScreenCurrentQuery;
+    String queryScreenDropDownLabel;
+    int queryScreenDropDownIndex;
+
 class Screen
 {
     public void draw() {}
@@ -54,9 +58,6 @@ class QueryScreen extends Screen
 {
     private PFont font;
     Dropdown queryDD;
-    String currentQuery;
-    String dropDownLabel;
-    int dropDownIndex;
     
 
     QueryScreen()
@@ -76,9 +77,9 @@ class QueryScreen extends Screen
         queryDD.setCellHeight(query.textBoxHeight);
         queryDD.printDropdown();
         queryDD.printList();
-        currentQuery = query.userQuery;
-        dropDownIndex = queryDD.getSelectedIndex();
-        dropDownLabel = queryDD.getSelectedLabel();
+        queryScreenCurrentQuery = query.userQuery;
+        queryScreenDropDownIndex = queryDD.getSelectedIndex();
+        queryScreenDropDownLabel = queryDD.getSelectedLabel();
     }
 
     void mousePressed()
