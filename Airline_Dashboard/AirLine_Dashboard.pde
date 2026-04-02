@@ -9,16 +9,15 @@ Graphs graphs;
 Query query;
 
 OverviewScreen overviewScreen;
-QueryScreen queryScreen;
-MapScreen mapScreen;
-//DelaysScreen delaysScreen;
-Screen currentScreen;
-int currentScreenIdx = 0;
+QueryScreen    queryScreen;
+MapScreen      mapScreen;
+Screen         currentScreen;
+int            currentScreenIdx = 0;
 
-//final String[] SCREEN_NAMES  = { "Overview", "Routes", "Airlines", "Delays" };
-final String[] SCREEN_NAMES  = { "Overview", "Query", "Map" };
+final String[] SCREEN_NAMES = { "Overview", "Query", "Map" };
 PFont navFont;
 PFont navTitleFont;
+PFont mapFont;      // loaded once here, passed to MapScreen
 
 void setup()
 {
@@ -26,22 +25,23 @@ void setup()
     surface.setLocation(-1, -1);
     background(Visuals.BACKGROUND);
 
-    navFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
+    navFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);
     navTitleFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
+    mapFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);   // reuse button font for map labels
 
     flights = new TableWidget("flights2k.csv");
     flights.setXPos((width / 2) - flights.getTableWidth() / 2);
     prevButton = new Button(btnW, btnH, 0, 0);
     nextButton = new Button(btnW, btnH, 0, 0);
     graphs = new Graphs(flights.getData(), ROWS_TO_DISPLAY);
-    query = new Query(flights.getData());
-
+    query  = new Query(flights.getData());
 
     overviewScreen = new OverviewScreen(graphs, flights, prevButton, nextButton, ROWS_TO_DISPLAY);
-    queryScreen = new QueryScreen();
-    mapScreen  = new MapScreen();
-    
-    //delaysScreen    = new DelaysScreen();
+    queryScreen    = new QueryScreen();
+
+    // MapScreen uses the large 100k CSV for richer route coverage
+    Table mapData = loadTable("flights100k.csv", "csv");
+    mapScreen = new MapScreen(mapData, mapFont, navTitleFont);
 
     currentScreen = overviewScreen;
 }
@@ -61,7 +61,6 @@ void mousePressed()
         _switchScreen(clicked);
         return;
     }
-
     currentScreen.mousePressed();
 }
 
@@ -77,27 +76,23 @@ void _drawNavbar()
     strokeWeight(1);
     line(0, navH, width, navH);
 
-    fill(Visuals.NAVBAR_TITLE_COLOUR);
-    textFont(navTitleFont);
-    textSize(Visuals.NAVBAR_TITLE_SIZE);
-    textAlign(LEFT, CENTER);
-
     noStroke();
     fill(Visuals.ACCENT);
     ellipse(28, navH / 2.0, 8, 8);
 
     fill(Visuals.NAVBAR_TITLE_COLOUR);
+    textFont(navTitleFont);
+    textSize(Visuals.NAVBAR_TITLE_SIZE);
+    textAlign(LEFT, CENTER);
     text("Airline Dashboard", 42, navH / 2.0);
 
-
     float tabStartX = 320;
-
     textFont(navFont);
     textSize(13);
 
     for (int i = 0; i < SCREEN_NAMES.length; i++)
     {
-        float tx = tabStartX + i * Visuals.TAB_W;
+        float   tx     = tabStartX + i * Visuals.TAB_W;
         boolean active = (i == currentScreenIdx);
         boolean hover  = (_navbarTabAt(mouseX, mouseY) == i);
 
@@ -142,10 +137,9 @@ void _switchScreen(int idx)
     currentScreenIdx = idx;
     switch (idx)
     {
-        case 0:  currentScreen = overviewScreen;  break;
+        case 0:  currentScreen = overviewScreen; break;
         case 1:  currentScreen = queryScreen;    break;
-        case 2:  currentScreen = mapScreen;  break;
-        //case 3:  currentScreen = delaysScreen;    break;
+        case 2:  currentScreen = mapScreen;      break;
         default: currentScreen = overviewScreen;
     }
 }
