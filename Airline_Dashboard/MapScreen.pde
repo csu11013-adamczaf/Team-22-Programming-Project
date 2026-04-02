@@ -1,17 +1,3 @@
-// ══════════════════════════════════════════════════════════════════════════════
-// MapScreen
-//
-// Draws a simplified US map with flight routes for a selected date.
-// - Dropdown (top-left) filters by FL_DATE (column 0 in the CSV)
-// - Each flight is drawn as a bezier arc from origin to destination airport
-// - Colour coding: normal = blue accent, cancelled = red, diverted = yellow
-// - Airport dots scale with the number of flights at that airport on that date
-// - A legend explains the colour scheme
-//
-// No external libraries required — uses Processing's built-in drawing only.
-// Airport lat/lon coordinates are hardcoded from published FAA/OurAirports data.
-// ══════════════════════════════════════════════════════════════════════════════
-
 class MapScreen extends Screen
 {
     // ── Data ──────────────────────────────────────────────────────────────────
@@ -20,6 +6,7 @@ class MapScreen extends Screen
     private Dropdown dateDD;
     private PFont    mapFont;
     private PFont    labelFont;
+    private PImage   mapImage; // Added for the background image
 
     // Airport coordinate lookup: IATA -> [lat, lon]
     private java.util.HashMap<String, float[]> airportCoords;
@@ -40,12 +27,17 @@ class MapScreen extends Screen
     // Map canvas area (below navbar)
     private float mapX, mapY, mapW, mapH;
 
+    private final color SEA_COLOR = #1ba8f3;
+
     // ── Constructor ───────────────────────────────────────────────────────────
     MapScreen(Table data, PFont mapFont, PFont labelFont)
     {
         this.data      = data;
         this.mapFont   = mapFont;
         this.labelFont = labelFont;
+        
+        // Load the map image provided
+        this.mapImage  = loadImage("Map.png");
 
         _buildAirportCoords();
         _buildDateDropdown();
@@ -60,6 +52,7 @@ class MapScreen extends Screen
     // ── draw() ────────────────────────────────────────────────────────────────
     public void draw()
     {
+        background(SEA_COLOR);
         // Rebuild cache if date changed
         int dateIdx = dateDD.getSelectedIndex();
         if (dateIdx != lastDateIdx)
@@ -68,12 +61,10 @@ class MapScreen extends Screen
             lastDateIdx = dateIdx;
         }
 
-        // Map background
-        noStroke();
-        fill(Visuals.PANEL_BG);
-        rect(mapX, mapY, mapW, mapH);
+        // Draw the static map image as the background
+        image(mapImage, mapX+40, mapY + 100, mapW - 160, mapH - 100);
 
-        _drawUSOutline();
+        // Draw dynamic flight data on top of the image
         _drawFlightArcs();
         _drawAirportDots();
         _drawLegend();
@@ -92,7 +83,6 @@ class MapScreen extends Screen
     }
 
     // ── Coordinate projection ─────────────────────────────────────────────────
-    // Mercator-style projection mapping lat/lon to screen pixel coordinates.
     private float lonToX(float lon)
     {
         return mapX + (lon - LON_MIN) / (LON_MAX - LON_MIN) * mapW;
@@ -100,206 +90,7 @@ class MapScreen extends Screen
 
     private float latToY(float lat)
     {
-        // Invert Y: higher lat = lower pixel y
         return mapY + (1.0 - (lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * mapH;
-    }
-
-    // ── US State Outline ──────────────────────────────────────────────────────
-    // Simplified US state outlines as [lon, lat] vertex sequences.
-    // Each state is a closed polygon. Drawn as thin lines on the map panel.
-    private void _drawUSOutline()
-    {
-        stroke(Visuals.CHART_GRIDLINE);
-        strokeWeight(0.8);
-        noFill();
-
-        // Continental US rough outline (simplified boundary polygon)
-        float[][] contUS = {
-            {-124.7, 48.4}, {-124.6, 46.2}, {-124.0, 43.0}, {-124.5, 42.0},
-            {-124.2, 40.4}, {-122.4, 37.2}, {-120.5, 34.5}, {-117.1, 32.5},
-            {-114.7, 32.7}, {-111.0, 31.3}, {-108.2, 31.3}, {-106.5, 31.8},
-            {-104.0, 29.6}, {-100.0, 28.0}, {-97.3,  26.0}, {-96.5,  25.8},
-            {-97.1,  26.4}, {-97.0,  28.0}, {-94.0,  29.7}, {-90.0,  29.0},
-            {-89.5,  29.9}, {-88.5,  30.2}, {-85.5,  30.0}, {-84.9,  29.7},
-            {-82.1,  29.4}, {-81.2,  25.1}, {-80.1,  25.8}, {-79.9,  27.0},
-            {-81.3,  30.7}, {-80.0,  32.0}, {-78.5,  33.9}, {-75.7,  35.2},
-            {-75.4,  35.6}, {-74.0,  36.9}, {-75.9,  37.0}, {-76.0,  38.0},
-            {-75.0,  38.5}, {-74.2,  39.6}, {-72.0,  41.0}, {-70.2,  41.3},
-            {-70.0,  42.1}, {-69.9,  44.5}, {-67.0,  47.1}, {-67.8,  47.1},
-            {-69.2,  47.5}, {-70.7,  43.1}, {-71.5,  42.0}, {-73.3,  42.0},
-            {-73.4,  45.0}, {-74.7,  45.0}, {-77.0,  43.6}, {-76.2,  44.2},
-            {-76.8,  43.6}, {-78.9,  43.0}, {-79.2,  43.5}, {-78.7,  42.9},
-            {-79.8,  42.0}, {-82.5,  41.7}, {-82.7,  42.0}, {-83.1,  42.1},
-            {-82.4,  43.0}, {-82.5,  45.3}, {-84.2,  46.5}, {-83.4,  46.0},
-            {-87.0,  48.0}, {-88.4,  48.3}, {-90.4,  46.6}, {-92.0,  46.7},
-            {-92.0,  48.0}, {-95.2,  49.0}, {-100.0, 49.0}, {-104.0, 49.0},
-            {-110.0, 49.0}, {-114.0, 49.0}, {-117.0, 49.0}, {-120.0, 49.0},
-            {-122.8, 49.0}, {-122.8, 48.4}, {-124.7, 48.4}
-        };
-        _drawPolyline(contUS, true);
-
-        // Great Lakes rough outlines (simplified)
-        float[][] lakeSuperior = {
-            {-92.1, 48.2}, {-89.0, 48.2}, {-84.4, 46.6}, {-84.0, 45.8},
-            {-87.0, 45.0}, {-89.5, 45.0}, {-92.0, 46.8}, {-92.1, 48.2}
-        };
-        _drawPolyline(lakeSuperior, true);
-
-        float[][] lakeMichigan = {
-            {-86.0, 46.1}, {-87.8, 45.8}, {-87.5, 43.0}, {-87.0, 41.7},
-            {-85.8, 41.7}, {-84.8, 43.7}, {-86.0, 46.1}
-        };
-        _drawPolyline(lakeMichigan, true);
-
-        float[][] lakeHuron = {
-            {-84.4, 46.6}, {-82.5, 45.5}, {-82.6, 43.6}, {-83.6, 43.1},
-            {-83.4, 44.2}, {-82.0, 45.0}, {-83.4, 46.0}, {-84.4, 46.6}
-        };
-        _drawPolyline(lakeHuron, true);
-
-        float[][] lakeErie = {
-            {-83.5, 42.2}, {-80.5, 42.7}, {-78.9, 42.9}, {-79.8, 42.2},
-            {-83.5, 42.2}
-        };
-        _drawPolyline(lakeErie, true);
-
-        float[][] lakeOntario = {
-            {-79.2, 43.6}, {-76.2, 44.2}, {-76.8, 43.6}, {-79.2, 43.6}
-        };
-        _drawPolyline(lakeOntario, true);
-
-        // Faint interior state boundary lines (major ones only)
-        float[][][] stateBorders = {
-            // East coast states (simplified vertical/diagonal separators)
-            {{-77.5, 38.9}, {-77.5, 39.7}, {-75.8, 39.7}},  // MD/PA
-            {{-73.9, 42.0}, {-73.9, 45.0}},                  // NY/CT/MA
-            {{-71.5, 42.0}, {-71.5, 42.7}},                  // MA/RI
-            // Mississippi River roughly
-            {{-91.5, 32.0}, {-89.5, 35.0}, {-89.1, 36.5}, {-89.5, 37.0},
-             {-88.1, 37.1}, {-90.1, 38.9}, {-90.5, 41.5}},
-            // Rockies / plains dividers
-            {{-104.0, 37.0}, {-104.0, 41.0}, {-104.0, 45.0}},
-            {{-111.0, 37.0}, {-111.0, 42.0}},
-            // Texas southern border
-            {{-100.0, 28.0}, {-100.0, 34.0}, {-103.0, 36.5}},
-        };
-        stroke(Visuals.CHART_GRIDLINE);
-        strokeWeight(0.5);
-        for (float[][] border : stateBorders)
-            _drawPolyline(border, false);
-
-        // Alaska (simplified)
-        stroke(Visuals.CHART_GRIDLINE);
-        strokeWeight(0.6);
-        float[][] alaska = {
-            {-141.0, 60.0}, {-140.0, 57.0}, {-136.0, 57.0}, {-133.0, 56.0},
-            {-130.0, 54.8}, {-131.5, 55.0}, {-133.5, 58.0}, {-136.0, 59.5},
-            {-147.0, 61.0}, {-153.0, 59.0}, {-161.0, 59.0}, {-166.0, 63.8},
-            {-168.0, 65.6}, {-166.5, 68.0}, {-163.0, 66.0}, {-156.0, 71.5},
-            {-141.0, 60.0}
-        };
-        // Draw Alaska in inset bottom-left corner
-        _drawAlaskaInset(alaska);
-
-        // Hawaii (simplified)
-        float[][] hawaii = {{-156.5, 21.0}, {-154.8, 19.3}, {-155.4, 18.9}, {-156.5, 21.0}};
-        _drawHawaiiInset(hawaii);
-    }
-
-    private void _drawPolyline(float[][] pts, boolean closed)
-    {
-        beginShape();
-        for (float[] p : pts)
-            vertex(lonToX(p[0]), latToY(p[1]));
-        if (closed) endShape(CLOSE);
-        else        endShape();
-    }
-
-    private void _drawAlaskaInset(float[][] pts)
-    {
-        // Alaska inset: bottom-left of map, scaled down
-        float iX = mapX + 30, iY = mapY + mapH - 180;
-        float iW = 220, iH = 170;
-        noFill();
-        stroke(Visuals.PANEL_BORDER);
-        strokeWeight(0.5);
-        rect(iX - 4, iY - 4, iW + 8, iH + 8, 4);
-
-        stroke(Visuals.CHART_GRIDLINE);
-        strokeWeight(0.7);
-        float laMin = -170, laMax = -130, loMin = 54, loMax = 72;
-        beginShape();
-        for (float[] p : pts)
-        {
-            float px = iX + (p[0] - laMin) / (laMax - laMin) * iW;
-            float py = iY + (1.0 - (p[1] - loMin) / (loMax - loMin)) * iH;
-            vertex(px, py);
-        }
-        endShape(CLOSE);
-
-        // Alaska airport dots from cache
-        if (cachedAirportFlightCount != null)
-        {
-            String[] akAirports = {"ANC","FAI","JNU","KTN","ADQ","BET","ADK","AKN",
-                                   "CDV","DLG","SIT","WRG","YAK","OME","OTZ","SCC","PSG"};
-            for (String code : akAirports)
-            {
-                float[] coord = airportCoords.get(code);
-                if (coord == null) continue;
-                float px = iX + (coord[1] - laMin) / (laMax - laMin) * iW;
-                float py = iY + (1.0 - (coord[0] - loMin) / (loMax - loMin)) * iH;
-                int ct = cachedAirportFlightCount.containsKey(code)
-                       ? cachedAirportFlightCount.get(code) : 0;
-                noStroke();
-                fill(Visuals.ACCENT, ct > 0 ? 200 : 80);
-                ellipse(px, py, ct > 0 ? 5 : 3, ct > 0 ? 5 : 3);
-            }
-        }
-
-        fill(Visuals.CHART_LABEL);
-        textFont(mapFont);
-        textSize(10);
-        textAlign(LEFT, BOTTOM);
-        text("Alaska", iX + 2, iY - 6);
-    }
-
-    private void _drawHawaiiInset(float[][] pts)
-    {
-        float iX = mapX + 270, iY = mapY + mapH - 140;
-        float iW = 160, iH = 110;
-        noFill();
-        stroke(Visuals.PANEL_BORDER);
-        strokeWeight(0.5);
-        rect(iX - 4, iY - 4, iW + 8, iH + 8, 4);
-
-        // Draw Hawaiian islands as simple dots/blobs
-        String[][] hiIslands = {
-            {"HNL", "-157.9", "21.3"},  // Oahu
-            {"OGG", "-156.4", "20.9"},  // Maui
-            {"KOA", "-155.5", "19.7"},  // Big Island west
-            {"ITO", "-155.0", "19.7"},  // Big Island east
-            {"LIH", "-159.3", "22.0"},  // Kauai
-        };
-
-        for (String[] isle : hiIslands)
-        {
-            float lon = Float.parseFloat(isle[1]);
-            float lat = Float.parseFloat(isle[2]);
-            float px = iX + (lon - (-162.0)) / ((-154.0) - (-162.0)) * iW;
-            float py = iY + (1.0 - (lat - 18.5) / (23.0 - 18.5)) * iH;
-            noStroke();
-            boolean hasFlights = cachedAirportFlightCount != null
-                              && cachedAirportFlightCount.containsKey(isle[0])
-                              && cachedAirportFlightCount.get(isle[0]) > 0;
-            fill(hasFlights ? Visuals.ACCENT : Visuals.CHART_GRIDLINE);
-            ellipse(px, py, hasFlights ? 7 : 5, hasFlights ? 7 : 5);
-        }
-
-        fill(Visuals.CHART_LABEL);
-        textFont(mapFont);
-        textSize(10);
-        textAlign(LEFT, BOTTOM);
-        text("Hawaii", iX + 2, iY - 6);
     }
 
     // ── Flight arcs ───────────────────────────────────────────────────────────
@@ -315,26 +106,20 @@ class MapScreen extends Screen
             float dx = cachedDestX[i];
             float dy = cachedDestY[i];
 
-            // Skip flights with unknown airports
             if (ox < 0 || dx < 0) continue;
-
-            // Skip Alaska/Hawaii inset area flights that would draw off-screen
-            boolean isAK = (ox < mapX + 260 && oy > mapY + mapH - 190);
-            if (isAK) continue;
 
             color arcCol;
             if (cachedCancelled[i])
-                arcCol = color(239, 68, 68, 55);     // red, semi-transparent
+                arcCol = color(239, 68, 68, 55);
             else if (cachedDiverted[i])
-                arcCol = color(245, 158, 11, 70);    // amber
+                arcCol = color(245, 158, 11, 70);
             else
-                arcCol = color(59, 130, 246, 35);    // blue accent
+                arcCol = color(36, 255, 3);
 
-            // Bezier control point: midpoint elevated perpendicular to the route
             float mx = (ox + dx) / 2.0;
             float my = (oy + dy) / 2.0;
             float dist = dist(ox, oy, dx, dy);
-            float lift = -dist * 0.25;  // arc upward
+            float lift = -dist * 0.25; 
             float cpx = mx;
             float cpy = my + lift;
 
@@ -351,7 +136,6 @@ class MapScreen extends Screen
     {
         if (cachedAirportFlightCount == null) return;
 
-        // Find max for scaling
         int maxFlights = 1;
         for (int v : cachedAirportFlightCount.values())
             if (v > maxFlights) maxFlights = v;
@@ -365,28 +149,20 @@ class MapScreen extends Screen
 
             float lat = coord[0], lon = coord[1];
 
-            // Skip if outside continental US projection (Alaska/Hawaii handled in insets)
             if (lon < LON_MAX && lon > LON_MIN && lat > LAT_MIN && lat < LAT_MAX)
             {
                 float px = lonToX(lon);
                 float py = latToY(lat);
 
-                // Skip inset areas
-                if (px < mapX + 260 && py > mapY + mapH - 190) continue;
-                if (px < mapX + 440 && py > mapY + mapH - 150) continue;
-
                 float dotR = 2.5 + (float) ct / maxFlights * 8.0;
 
-                // Glow
                 noStroke();
                 fill(red(Visuals.ACCENT), green(Visuals.ACCENT), blue(Visuals.ACCENT), 25);
                 ellipse(px, py, dotR * 3, dotR * 3);
 
-                // Dot
                 fill(Visuals.ACCENT, 220);
                 ellipse(px, py, dotR, dotR);
 
-                // Label for major airports
                 if (ct > maxFlights * 0.08)
                 {
                     fill(Visuals.GLOBAL_TEXT_COLOUR_LIGHT);
@@ -400,7 +176,7 @@ class MapScreen extends Screen
         textAlign(LEFT, BASELINE);
     }
 
-    // ── Legend ────────────────────────────────────────────────────────────────
+    // ── Legend & Date Labels ──────────────────────────────────────────────────
     private void _drawLegend()
     {
         float lx = width - 220;
@@ -423,7 +199,7 @@ class MapScreen extends Screen
         textAlign(LEFT, CENTER);
         text("Flight Legend", lx + 12, ly + 14);
 
-        float[] cols  = { color(59, 130, 246), color(239, 68, 68), color(245, 158, 11) };
+        color[] cols  = { color(36, 255, 3), color(239, 68, 68), color(245, 158, 11) };
         String[] labs = { "Normal flight", "Cancelled", "Diverted" };
 
         for (int i = 0; i < 3; i++)
@@ -438,7 +214,6 @@ class MapScreen extends Screen
             text(labs[i], lx + 44, ry);
         }
 
-        // Airport size legend
         noStroke();
         fill(Visuals.ACCENT, 180);
         ellipse(lx + 20, ly + 94, 5,  5);
@@ -446,19 +221,14 @@ class MapScreen extends Screen
         fill(Visuals.CHART_LABEL);
         textSize(9);
         text("= fewer / more flights", lx + 44, ly + 94);
-
-        strokeWeight(1);
-        textAlign(LEFT, BASELINE);
     }
 
-    // ── Date label ────────────────────────────────────────────────────────────
     private void _drawDateLabel()
     {
         int idx = dateDD.getSelectedIndex();
         if (idx < 0 || idx >= uniqueDates.length) return;
 
         String dateLabel = uniqueDates[idx];
-        // Parse out just the date part before the space
         if (dateLabel.contains(" ")) dateLabel = dateLabel.substring(0, dateLabel.indexOf(" "));
 
         textFont(labelFont);
@@ -472,8 +242,8 @@ class MapScreen extends Screen
         fill(Visuals.PANEL_TITLE_COLOUR);
         textAlign(LEFT, CENTER);
         text("Showing: " + dateLabel, width - tw - 30, mapY + 154);
-        textAlign(LEFT, BASELINE);
     }
+
 
     // ── Cache builder ─────────────────────────────────────────────────────────
     private void _buildFlightCache(int dateIdx)

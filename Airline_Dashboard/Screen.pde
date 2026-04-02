@@ -177,36 +177,6 @@ class QueryScreen extends Screen
     }
 }
 
-class MapScreen extends Screen
-{
-    private PFont font;
-
-    MapScreen()
-    {
-        this.font = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
-    }
-
-    public void draw()
-    {
-        _drawPlaceholder("Maps", "Maps function coming soon.");
-    }
-}
-
-class DelaysScreen extends Screen
-{
-    private PFont font;
-
-    DelaysScreen()
-    {
-        this.font = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
-    }
-
-    public void draw()
-    {
-        _drawPlaceholder("Delays", "Delay analysis charts coming soon.");
-    }
-}
-
 void _drawPlaceholder(String screenName, String message)
 {
     int navH   = Visuals.NAVBAR_H;

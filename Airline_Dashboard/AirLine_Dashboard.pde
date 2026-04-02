@@ -1,6 +1,6 @@
 float btnW = 80;
 float btnH = 30;
-int   ROWS_TO_DISPLAY = 10;
+int   ROWS_TO_DISPLAY = 10;  
 
 TableWidget flights;
 Button prevButton;
@@ -11,13 +11,15 @@ Query query;
 OverviewScreen overviewScreen;
 QueryScreen    queryScreen;
 MapScreen      mapScreen;
+PassengerScreen passengerScreen; // Add this near other screens
 Screen         currentScreen;
 int            currentScreenIdx = 0;
 
-final String[] SCREEN_NAMES = { "Overview", "Query", "Map" };
+final String[] SCREEN_NAMES = { "Overview", "Query", "Map", "Passenger Mode" };
 PFont navFont;
 PFont navTitleFont;
 PFont mapFont;      // loaded once here, passed to MapScreen
+Table mapData;
 
 void setup()
 {
@@ -28,6 +30,7 @@ void setup()
     navFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);
     navTitleFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
     mapFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);   // reuse button font for map labels
+    mapData = loadTable("flights2k.csv", "csv");
 
     flights = new TableWidget("flights2k.csv");
     flights.setXPos((width / 2) - flights.getTableWidth() / 2);
@@ -38,9 +41,7 @@ void setup()
 
     overviewScreen = new OverviewScreen(graphs, flights, prevButton, nextButton, ROWS_TO_DISPLAY);
     queryScreen    = new QueryScreen();
-
-    // MapScreen uses the large 100k CSV for richer route coverage
-    Table mapData = loadTable("flights100k.csv", "csv");
+    passengerScreen = new PassengerScreen(flights.getData());
     mapScreen = new MapScreen(mapData, mapFont, navTitleFont);
 
     currentScreen = overviewScreen;
@@ -140,6 +141,7 @@ void _switchScreen(int idx)
         case 0:  currentScreen = overviewScreen; break;
         case 1:  currentScreen = queryScreen;    break;
         case 2:  currentScreen = mapScreen;      break;
+        case 3: currentScreen = passengerScreen; break;
         default: currentScreen = overviewScreen;
     }
 }
