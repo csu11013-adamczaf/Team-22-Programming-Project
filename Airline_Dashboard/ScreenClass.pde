@@ -4,54 +4,6 @@ class Screen
     public void mousePressed() {}
 }
 
-class OverviewScreen extends Screen
-{
-    private Graphs graphs;
-    private TableWidget flights;
-    private Button prevButton;
-    private Button nextButton;
-    private int rowsToDisplay;
-
-    
-
-    OverviewScreen(Graphs graphs, TableWidget flights, Button prevButton, Button nextButton, int rowsToDisplay)
-    {
-        this.graphs = graphs;
-        this.flights = flights;
-        this.prevButton = prevButton;
-        this.nextButton = nextButton;
-        this.rowsToDisplay = rowsToDisplay;
-    }
-
-    public void draw()
-    {
-        graphs.printPieChart();
-        graphs.printBarChart();
-        graphs.printLineChart();
-        graphs.printDropdownLists();
-
-        flights.printWidget(rowsToDisplay, prevButton, nextButton);
-        prevButton.printButton("Previous Page", Visuals.BTN_BG, Visuals.BTN_TEXT);
-        nextButton.printButton("Next Page", Visuals.BTN_BG, Visuals.BTN_TEXT);
-        flights.displayPageNumber(Visuals.BTN_BG, Visuals.BTN_TEXT);
-    }
-
-    public void mousePressed()
-    {
-        graphs.mouseClicked();
-
-        if (nextButton.buttonPressed()) flights.nextPage();
-
-        if (prevButton.buttonPressed())
-        {
-            if (flights.getCurrentPage() > 0)
-                flights.previousPage();
-            else
-                flights.setCurrentPage(flights.getMaxPage());
-        }
-    }
-}
-
 class QueryScreen extends Screen
 {
     private Dropdown queryDD;
@@ -76,19 +28,13 @@ class QueryScreen extends Screen
         divertedBox = new CheckBox(query.boxXPos, query.boxYPos+41, "Show Diverted?");
         cancelledBox = new CheckBox(query.boxXPos, query.boxYPos+41, "Show Cancelled?");
         filteredGraphs = new Graphs(queryFlights.getData(), ROWS_TO_DISPLAY);
+        filteredGraphs.graphHeightOffset = 100;
     }
 
     public void draw()
     {
 
-        filteredGraphs.printPieChart();
-        graphs.printBarChart();
-        graphs.printLineChart();
-        graphs.printDropdownLists();
-        
-
         // Only filter when the text actually changes
-
         if (!(query.userQuery).equals(lastQuery) || (lastIndex != queryDD.getSelectedIndex()) 
             || lastDivertedValue != divertedBox.enabled || lastCancelledValue != cancelledBox.enabled) 
         {
@@ -98,17 +44,38 @@ class QueryScreen extends Screen
             lastIndex = queryDD.getSelectedIndex();
             lastDivertedValue = divertedBox.enabled;
             lastCancelledValue = cancelledBox.enabled;
+            filteredGraphs.updateData(queryFlights.getData());
         }
 
+        // Print Table
         prevButton.printButton("Previous Page", Visuals.BTN_BG, Visuals.BTN_TEXT);
         nextButton.printButton("Next Page", Visuals.BTN_BG, Visuals.BTN_TEXT);
         queryFlights.displayPageNumber(Visuals.BTN_BG, Visuals.BTN_TEXT);
-
         queryFlights.printWidget(ROWS_TO_DISPLAY, prevButton, nextButton);
 
-        //_drawPlaceholder("Query", "Query search function coming soon.");
+        // If no matches, inform user
+        if(queryFlights.flightData.getRowCount()==1)
+        {
+            queryFlights.currentPage = 0;
+            textFont(loadFont(Visuals.QUERY_SEARCH_FONT));
+            textSize(40);
+            fill(#ffffff);
+            String emptyTable = "No records match the search criteria";
+            String emptyGraphs = "No data to display";
+            text(emptyTable,(queryFlights.getXPos()+queryFlights.tableWidth/2-textWidth(emptyTable)/2),queryFlights.yPos+queryFlights.tableHeight/2+textAscent());
+            text(emptyGraphs,(width/2-textWidth(emptyGraphs)/2),350);
+        }
+        else
+        {
+            filteredGraphs.printPieChart();
+            filteredGraphs.printBarChart();
+            filteredGraphs.printLineChart();
+            filteredGraphs.printDropdownLists();
+        }
+
+        // Print Search Box
         query.getUserQueryString();
-        query.printQueryBox(1920/2, 550, queryDD);
+        query.printQueryBox(1920/2, queryFlights.yPos-115, queryDD);
         queryDD.setTextSize(15);
         queryDD.setCellHeight(query.textBoxHeight);
         queryDD.printDropdown();
@@ -121,6 +88,8 @@ class QueryScreen extends Screen
         cancelledBox.xPos = divertedBox.xPos+divertedBox.width+textWidth(divertedBox.text)+30;
         cancelledBox.yPos = divertedBox.yPos;
         cancelledBox.draw();
+
+
     }
 
     Table filterFlights(String sentence, CheckBox diverted, CheckBox cancelled)
@@ -168,6 +137,7 @@ class QueryScreen extends Screen
 
     void mousePressed()
     {
+        filteredGraphs.mouseClicked();
         divertedBox.mouseClicked();
         cancelledBox.mouseClicked();
         queryDD.mouseClicked();

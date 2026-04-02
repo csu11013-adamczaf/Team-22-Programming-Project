@@ -19,7 +19,7 @@ final int GRAPH_DROPDOWN_GAP = 8;
 final int GRAPH_POINT_PAD    = 30;
 PFont GRAPH_FONT;
 
-final int GRAPH_PANEL_Y = Visuals.NAVBAR_H + 8;
+final int GRAPH_PANEL_Y = Visuals.NAVBAR_H +8;
 
 final int[] CATEGORICAL_COLS = { 0, 1, 2, 3, 4, 5, 7, 8, 9, 15, 16 };
 final int[] NUMERICAL_COLS   = { 6, 10, 11, 12, 13, 14, 17 };
@@ -32,6 +32,7 @@ class Graphs
     private PFont graphFont;
     private PFont titleFont;
     private int   numberOfRows;
+    public int graphHeightOffset;
 
     private Dropdown pieCategoryDD;
     private Dropdown lineCategoryDD;
@@ -79,9 +80,9 @@ class Graphs
         return height - TABLE_Y_OFFSET - (numberOfRows * ROW_HEIGHT) - HEADER_HEIGHT;
     }
 
-    private float chartRegionHeight()
+    private float chartRegionHeight() //FIX LATER!
     {
-        return tableTopY() - GRAPH_REGION_GAP - GRAPH_PANEL_Y;
+            return tableTopY() - GRAPH_REGION_GAP - GRAPH_PANEL_Y - graphHeightOffset;
     }
 
 
@@ -479,6 +480,11 @@ class Graphs
         popMatrix();
 
         textAlign(LEFT, BASELINE);
+    }
+
+    public void updateData(Table newData)
+    {
+        this.data = newData;
     }
 
 

@@ -8,14 +8,13 @@ Button nextButton;
 Graphs graphs;
 Query query;
 
-OverviewScreen overviewScreen;
 QueryScreen    queryScreen;
 MapScreen      mapScreen;
 PassengerScreen passengerScreen; // Add this near other screens
 Screen         currentScreen;
 int            currentScreenIdx = 0;
 
-final String[] SCREEN_NAMES = { "Overview", "Query", "Map", "Passenger Mode" };
+final String[] SCREEN_NAMES = { "Search", "Map", "Passenger Mode" };
 PFont navFont;
 PFont navTitleFont;
 PFont mapFont;      // loaded once here, passed to MapScreen
@@ -39,12 +38,11 @@ void setup()
     graphs = new Graphs(flights.getData(), ROWS_TO_DISPLAY);
     query  = new Query(flights.getData());
 
-    overviewScreen = new OverviewScreen(graphs, flights, prevButton, nextButton, ROWS_TO_DISPLAY);
     queryScreen    = new QueryScreen();
     passengerScreen = new PassengerScreen(flights.getData());
     mapScreen = new MapScreen(mapData, mapFont, navTitleFont);
 
-    currentScreen = overviewScreen;
+    currentScreen = queryScreen;
 }
 
 void draw()
@@ -138,10 +136,9 @@ void _switchScreen(int idx)
     currentScreenIdx = idx;
     switch (idx)
     {
-        case 0:  currentScreen = overviewScreen; break;
-        case 1:  currentScreen = queryScreen;    break;
-        case 2:  currentScreen = mapScreen;      break;
-        case 3: currentScreen = passengerScreen; break;
-        default: currentScreen = overviewScreen;
+        case 0:  currentScreen = queryScreen;    break;
+        case 1:  currentScreen = mapScreen;      break;
+        case 2: currentScreen = passengerScreen; break;
+        default: currentScreen = queryScreen;
     }
 }
