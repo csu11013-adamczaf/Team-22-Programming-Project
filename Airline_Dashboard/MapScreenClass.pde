@@ -163,14 +163,14 @@ class MapScreen extends Screen
                 fill(Visuals.ACCENT, 220);
                 ellipse(px, py, dotR, dotR);
 
-                if (ct > maxFlights * 0.08)
-                {
-                    fill(Visuals.GLOBAL_TEXT_COLOUR_LIGHT);
-                    textFont(mapFont);
-                    textSize(9);
-                    textAlign(CENTER, BOTTOM);
-                    text(code, px, py - dotR / 2.0 - 1);
-                }
+                //if (ct > maxFlights * 0.08)
+                //{
+                fill(Visuals.GLOBAL_TEXT_COLOUR_DARK);
+                textFont(mapFont);
+                textSize(9);
+                textAlign(CENTER, BOTTOM);
+                text(code, px, py - dotR / 2.0 - 1);
+                //}
             }
         }
         textAlign(LEFT, BASELINE);
