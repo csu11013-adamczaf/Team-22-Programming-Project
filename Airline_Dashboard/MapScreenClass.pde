@@ -125,7 +125,7 @@ class MapScreen extends Screen
 
             noFill();
             stroke(arcCol);
-            strokeWeight(cachedCancelled[i] ? 1.5 : 0.8);
+            strokeWeight(cachedCancelled[i] ? 1.9 : 1.3);
             bezier(ox, oy, cpx, cpy, cpx, cpy, dx, dy);
         }
         strokeWeight(1);
@@ -163,14 +163,12 @@ class MapScreen extends Screen
                 fill(Visuals.ACCENT, 220);
                 ellipse(px, py, dotR, dotR);
 
-                //if (ct > maxFlights * 0.08)
-                //{
                 fill(Visuals.GLOBAL_TEXT_COLOUR_DARK);
                 textFont(mapFont);
-                textSize(9);
+                textSize(15);
                 textAlign(CENTER, BOTTOM);
                 text(code, px, py - dotR / 2.0 - 1);
-                //}
+                
             }
         }
         textAlign(LEFT, BASELINE);
