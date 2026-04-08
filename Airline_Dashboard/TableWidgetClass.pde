@@ -32,18 +32,32 @@ class TableWidget
 
         for (int row = 1; row < this.flightData.getRowCount(); row++)
         {
-            for (int column = 15; column <= 16; column++)
+            for (int column = 0; column <= 17; column++)
             {
-                if ((this.flightData.getString(row, column)).equals("1"))
-                    this.flightData.setString(row, column, "YES");
-                else
-                    this.flightData.setString(row, column, "NO");
+                String currentCell = this.flightData.getString(row, column);
+                if(currentCell.equals(null) || currentCell.equals(""))
+                {
+                    this.flightData.setString(row,column, "NO DATA");
+                }
+
+                if(column == 15 || column == 16)
+                {
+                    if (currentCell.equals("1"))
+                    {
+                        this.flightData.setString(row, column, "YES");
+                    }
+                    else
+                    {
+                        this.flightData.setString(row, column, "NO");
+                    }
                 }
             }
-            int[] temp = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18};
-            setColumnsToPrint(temp);
-            updateTableWidth();
         }
+
+        int[] temp = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18};
+        setColumnsToPrint(temp);
+        updateTableWidth();
+    }
 
         TableWidget(Table table, float xPos)
         {
@@ -63,6 +77,11 @@ class TableWidget
     public float getXPos()
     {
         return xPos;
+    }
+
+    public float getYPos()
+    {
+        return yPos;
     }
 
     public int getCurrentPage()

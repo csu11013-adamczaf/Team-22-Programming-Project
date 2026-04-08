@@ -11,35 +11,39 @@ class PassengerScreen extends Screen {
 
     PassengerScreen(Table data) {
         this.data = data;
-        int[] temp = {0,1,2,4,5,8,13};
-        divertedTable = new TableWidget(queryScreen.filterFlights("YES",16), 50);
-        divertedTable.setYPos(300);
+        int[] temp = {0,1,2,3,4,5,7,8,9,12,14,17};
+        divertedTable = new TableWidget(queryScreen.filterFlights("YES",16), 200);
+        divertedTable.setYPos(375);
         divertedTable.setColumnsToPrint(temp);
         divertedTable.updateTableWidth();
 
-        cancelledTable = new TableWidget(queryScreen.filterFlights("YES",15), 50);
-        cancelledTable.setYPos(700);
+        cancelledTable = new TableWidget(queryScreen.filterFlights("YES",15), 200);
+        cancelledTable.setYPos(725);
         cancelledTable.setColumnsToPrint(temp);
         cancelledTable.updateTableWidth();
+
+        _drawBackground();
+        _drawGrid();
     }
 
 
     public void draw() {
-        
-        _drawBackground();
-        _drawGrid();
 
         // 1. LEFT PANEL: Main Flight Focus (The "Hero" Card)
         _drawHeroFlight();
 
         // 2. RIGHT PANEL: Live Schedule (Glassmorphism List)
         _drawFlightSchedule();
-        divertedTable.printWidget(5, true);
-        cancelledTable.printWidget(5, true);
-       // _drawCancelledTable();
-       // _drawDivertedTable();
-        // 3. BOTTOM: System Telemetry
-        _drawTelemetryHUD();
+
+        textFont(passenger_PassengerHeaderFont);
+        textSize(30);
+        text("Diverted Flights", divertedTable.getXPos()+((divertedTable.getTableWidth()/2)-98), divertedTable.getYPos()-15);
+
+        text("Cancelled Flights", cancelledTable.getXPos()+((cancelledTable.getTableWidth()/2)-105), cancelledTable.getYPos()-15);
+
+        divertedTable.printWidget(8, true);
+        cancelledTable.printWidget(8, true);
+
     }
 
     private void _drawBackground() {
@@ -60,17 +64,17 @@ class PassengerScreen extends Screen {
     }
 
     private void _drawHeroFlight() {
-        float x = 80;
-        float y = Visuals.NAVBAR_H + 60;
+        float x = 375;
+        float y = Visuals.NAVBAR_H + 30;
         
         // Large Destination Label
         fill(TEXT_MAIN);
         textFont(passenger_PassengerHeaderFont);
         textSize(64);
-        text("NEW YORK", x, y + 60);
+        text("NEW YORK", 80, y + 60);
         textSize(24);
         fill(ACCENT_BLUE);
-        text("JFK  ·  GATE B22", x, y + 100);
+        text("JFK  ·  TERMINAL 1", 80, y + 100);
 
         // Visual Flight Path Logic
         stroke(ACCENT_BLUE, 100);
@@ -124,29 +128,6 @@ class PassengerScreen extends Screen {
             textAlign(CENTER, CENTER);
             text("ON TIME", x + 55, ry + 54);
             textAlign(LEFT, BASELINE);
-        }
-    }
-
-    private void _drawTelemetryHUD() {
-        float h = 120;
-        float y = height - h;
-        
-        // Blurred divider
-        stroke(255, 15);
-        line(80, y, width - 80, y);
-
-        String[] labels = {"ALTITUDE", "GROUND SPEED", "EST. ARRIVAL", "DISTANCE"};
-        String[] values = {"36,000 FT", "542 MPH", "14:20", "420 MI"};
-
-        for (int i = 0; i < 4; i++) {
-            float x = 100 + i * (width/4.5);
-            fill(TEXT_MUTED);
-            textFont(dropDown_DropDownFont);
-            textSize(12);
-            text(labels[i], x, y + 45);
-            fill(TEXT_MAIN);
-            textSize(24);
-            text(values[i], x, y + 80);
         }
     }
 }
