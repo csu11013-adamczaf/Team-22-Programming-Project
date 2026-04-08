@@ -57,7 +57,7 @@ class QueryScreen extends Screen
         if(queryFlights.flightData.getRowCount()==1)
         {
             queryFlights.currentPage = 0;
-            textFont(query_QueryFont);
+            textFont(query_QueryFontLarge);
             textSize(40);
             fill(#ffffff);
             String emptyTable = "No records match the search criteria";

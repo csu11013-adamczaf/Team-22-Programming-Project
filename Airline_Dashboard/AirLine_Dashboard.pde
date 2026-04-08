@@ -13,7 +13,7 @@ PassengerScreen passengerScreen; // Add this near other screens
 Screen         currentScreen;
 int            currentScreenIdx = 0;
 
-final String[] SCREEN_NAMES = { "Search", "Map", "Passenger Mode" };
+final String[] SCREEN_NAMES = { "Passenger Mode", "Search", "Map" };
 PFont navFont;
 PFont navTitleFont;
 PFont mapFont;      // loaded once here, passed to MapScreen
@@ -21,8 +21,10 @@ PFont table_TableFont;
 PFont table_TableHeaderFont;
 PFont button_ButtonFont;
 PFont query_QueryFont;
+PFont query_QueryFontLarge;
 PFont passenger_PassengerHeaderFont;
 PFont dropDown_DropDownFont;
+PImage query_queryTick;
 
 Table mapData;
 
@@ -33,7 +35,7 @@ void setup()
     background(Visuals.BACKGROUND);
     frameRate(30);
     
-    //Load Fonts only once
+    //Load Fonts & Images only once
     navFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);
     navTitleFont = loadFont(Visuals.PASSENGER_HEADER_FONT);
     mapFont      = loadFont(Visuals.DROPDOWN_FONT);   // reuse button font for map labels
@@ -41,9 +43,10 @@ void setup()
     table_TableHeaderFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
     button_ButtonFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
     query_QueryFont = loadFont(Visuals.QUERY_SEARCH_FONT);
+    query_QueryFontLarge = loadFont(Visuals.QUERY_SEARCH_FONT_LARGE);
     passenger_PassengerHeaderFont = loadFont(Visuals.PASSENGER_HEADER_FONT);
     dropDown_DropDownFont = loadFont(Visuals.DROPDOWN_FONT);
-    
+    query_queryTick = loadImage(Visuals.QUERY_WHITE_TICK);
     
     mapData = loadTable("flights2k.csv", "csv");
 
@@ -57,7 +60,7 @@ void setup()
     passengerScreen = new PassengerScreen(flights.getData());
     mapScreen = new MapScreen(mapData, mapFont, navTitleFont);
 
-    currentScreen = queryScreen;
+    currentScreen = passengerScreen;
 }
 
 void draw()
@@ -151,9 +154,9 @@ void _switchScreen(int idx)
     currentScreenIdx = idx;
     switch (idx)
     {
-        case 0:  currentScreen = queryScreen;    break;
-        case 1:  currentScreen = mapScreen;      break;
-        case 2: currentScreen = passengerScreen; break;
-        default: currentScreen = queryScreen;
+        case 0:  currentScreen = passengerScreen;    break;
+        case 1:  currentScreen = queryScreen;        break;
+        case 2: currentScreen = mapScreen;           break;
+        default: currentScreen = passengerScreen;
     }
 }

@@ -158,7 +158,7 @@ class MapScreen extends Screen
                 float px = lonToX(lon);
                 float py = latToY(lat);
 
-                float dotR = 2.5 + (float) ct / maxFlights * 8.0;
+                float dotR = 5.5 + (float) ct / maxFlights * 12.0;
 
                 noStroke();
                 fill(red(Visuals.ACCENT), green(Visuals.ACCENT), blue(Visuals.ACCENT), 25);

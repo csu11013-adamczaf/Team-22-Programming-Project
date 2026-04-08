@@ -33,7 +33,8 @@ class PassengerScreen extends Screen {
         _drawHeroFlight();
 
         // 2. RIGHT PANEL: Live Schedule (Glassmorphism List)
-        _drawFlightSchedule();
+        _drawFlightArrivals();
+        _drawFlightDepartures();
 
         textFont(passenger_PassengerHeaderFont);
         textSize(30);
@@ -94,9 +95,9 @@ class PassengerScreen extends Screen {
         ellipse(px, py, 20, 20);
     }
 
-    private void _drawFlightSchedule() {
+    private void _drawFlightArrivals() {
         float x = width - 450;
-        float y = Visuals.NAVBAR_H + 60;
+        float y = Visuals.NAVBAR_H + 40;
         float w = 370;
 
         // Header for list
@@ -105,8 +106,8 @@ class PassengerScreen extends Screen {
         textSize(18);
         text("UPCOMING ARRIVALS", x, y);
 
-        for (int i = 1; i < 7; i++) {
-            float ry = y + 40 + (i-1) * 90;
+        for (int i = 1; i < 6; i++) {
+            float ry = y + 20 + (i-1) * 85;
             
             // Glass Card
             fill(255, 10);
@@ -117,7 +118,44 @@ class PassengerScreen extends Screen {
             fill(TEXT_MAIN);
             textFont(dropDown_DropDownFont);
             textSize(15);
-            text(data.getString(i, 4) + " → " + data.getString(i, 8), x + 20, ry + 30);
+            text(data.getString(i+3, 4) + "  -->  " + "New York, NY", x + 20, ry + 30);
+            
+            // Status Tag
+            noStroke();
+            fill(ACCENT_BLUE, 40);
+            rect(x + 20, ry + 45, 70, 18, 4);
+            fill(TEXT_MAIN);
+            textSize(10);
+            textAlign(CENTER, CENTER);
+            text("ON TIME", x + 55, ry + 54);
+            textAlign(LEFT, BASELINE);
+        }
+    }
+
+    private void _drawFlightDepartures() {
+        float x = width - 450;
+        float y = Visuals.NAVBAR_H + 460+60;
+        float w = 370;
+
+        // Header for list
+        fill(TEXT_MAIN);
+        textFont(passenger_PassengerHeaderFont);
+        textSize(18);
+        text("UPCOMING DEPARTURES", x, y);
+
+        for (int i = 1; i < 6; i++) {
+            float ry = y + 20 + (i-1) * 85;
+            
+            // Glass Card
+            fill(255, 10);
+            stroke(255, 20);
+            rect(x, ry, w, 75, 12);
+            
+            // Flight Data
+            fill(TEXT_MAIN);
+            textFont(dropDown_DropDownFont);
+            textSize(15);
+            text("New York, NY" + "  -->  " + data.getString(i+11, 8), x + 20, ry + 30);
             
             // Status Tag
             noStroke();

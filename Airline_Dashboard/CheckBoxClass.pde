@@ -26,6 +26,10 @@ public class CheckBox
         textFont(query_QueryFont);
         fill(0);
         textSize(20);
+        if(enabled)
+        {
+            image(query_queryTick, xPos + 3.5, yPos + 3.5, width - 7.5, height - 7.5);
+        }
         // Position text to the right of the checkbox, with a 10px gap, and vertically aligned with the checkbox
         text(this.text, xPos + height + 10, (yPos + textAscent() + textDescent()));
     }

@@ -86,6 +86,7 @@ public class Query
         public void printQueryBox(float xPos, float yPos, Dropdown dropDown)
     {
         textFont(query_QueryFont);
+        textSize(24);
         String searchbyString = "Search through: ";
         float widgetWidth = textBoxWidth+60+dropDown.ddW+textWidth(searchbyString);
         boxXPos=xPos-((widgetWidth)/2);
