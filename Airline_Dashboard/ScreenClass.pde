@@ -20,6 +20,7 @@ class QueryScreen extends Screen
 
     QueryScreen()
     {
+        // Initialize the dropdown, table widget, checkboxes, and graphs for the query screen
         String[] queryLabels = {"Flight Date", "Carrier", "Flight Number", "Origin", "Origin City", "Origin State", "Origin WAC", "Destination", "Destination City", "Destination State", "Destination WAC", "CRS_DEP_TIME", "Departure Time", "CRS_ARR_TIME", "Arrival Time", "Cancelled", "Diverted", "Distance"};
         int[] queryIndices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
         queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices);
@@ -34,7 +35,7 @@ class QueryScreen extends Screen
     public void draw()
     {
 
-        // Only filter when the text actually changes
+        // Only filter when the query actually changes
         if (!(query.userQuery).equals(lastQuery) || (lastIndex != queryDD.getSelectedIndex()) 
             || lastDivertedValue != divertedBox.enabled || lastCancelledValue != cancelledBox.enabled) 
         {
@@ -91,7 +92,7 @@ class QueryScreen extends Screen
 
 
     }
-
+    // Filters the flights table based on the user's query string, selected column, and checkbox states for diverted/cancelled
     Table filterFlights(String sentence, int columnIndex)
     {
         Table all = flights.getData();
@@ -133,6 +134,7 @@ class QueryScreen extends Screen
         return filtered;
     }
 
+    // Handle mouse clicks for the checkboxes, dropdown, and buttons
     void mousePressed()
     {
         filteredGraphs.mouseClicked();
@@ -150,30 +152,4 @@ class QueryScreen extends Screen
                 queryFlights.setCurrentPage(flights.getMaxPage());
         }
     }
-}
-
-void _drawPlaceholder(String screenName, String message)
-{
-    int navH   = Visuals.NAVBAR_H;
-    float cx   = width / 2.0;
-    float cy   = navH + (height - navH) / 2.0;
-
-    noStroke();
-    fill(Visuals.PANEL_BG);
-    ellipse(cx, cy - 60, 100, 100);
-
-    fill(Visuals.ACCENT);
-    textAlign(CENTER, CENTER);
-    textSize(32);
-    text("✦", cx, cy - 60);
-
-    fill(Visuals.GLOBAL_TEXT_COLOUR_LIGHT);
-    textSize(28);
-    text(screenName, cx, cy);
-
-    fill(Visuals.TAB_TEXT_IDLE);
-    textSize(14);
-    text(message, cx, cy + 36);
-
-    textAlign(LEFT, BASELINE);
 }

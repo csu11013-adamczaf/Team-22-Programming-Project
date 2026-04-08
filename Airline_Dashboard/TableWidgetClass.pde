@@ -26,6 +26,7 @@ class TableWidget
 
     // Creates a table widget object with parameters, sets up required fonts.
     // For columns 15 and 16, changes the boolean value "0" and "1" to "YES" and "NO" for a more polished look
+    // If a cell is empty, fills it with "NO DATA" to avoid blank cells in the table.
     TableWidget(String flightData)
     {
         this.flightData = loadTable(flightData);
@@ -53,23 +54,23 @@ class TableWidget
                 }
             }
         }
-
+        // By default, all columns are printed. This can be changed with the setColumnsToPrint method.
         int[] temp = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18};
         setColumnsToPrint(temp);
         updateTableWidth();
     }
 
-        TableWidget(Table table, float xPos)
-        {
-            this.xPos = xPos;
-            this.flightData = table;
-            int[] temp = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18};
-            setColumnsToPrint(temp);
-            updateTableWidth();
-        }
+    TableWidget(Table table, float xPos)
+    {
+        this.xPos = xPos;
+        this.flightData = table;
+        int[] temp = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18};
+        setColumnsToPrint(temp);
+        updateTableWidth();
+    }
 
         // Accessor methods for private variables;
-        public int getMaxPage()
+    public int getMaxPage()
     {
         return maxPageNumber;
     }
@@ -129,28 +130,31 @@ class TableWidget
             currentPage = newPage;
     }
 
+    // Setters for x and y position. The setYPos method only works if the y position is not being set by printWidget() i.e. override is set to true when calling printWidget.
     public void setXPos(float xPos)
     {
         this.xPos = xPos;
     }
-    //This method only works if yPos is not set by printWidget() i.e. override is set to true when calling printWidget.
     public void setYPos(float yPos)
     {
         this.yPos = yPos;
     }
 
+    // Updates the table width based on the columns currently being printed. Called whenever the columnsToPrint variable is updated.
     public void updateTableWidth()
     {  
         int maxColumn = columnsToPrint.get(columnsToPrint.size()-1);
         tableWidth = getColumnOffset(maxColumn+((maxColumn == 18) ? 0 : 1));
     }
 
+    // Setter for the flight data. Used to update the table when a query is made, without needing to create a new TableWidget object.
     public void setData(Table newData)
     {
         this.flightData = newData;
         this.currentPage = 0;
     }
 
+    // Setter for the columns to be printed.
     public void setColumnsToPrint(int[] columns)
     {
         ArrayList<Integer> temp = new ArrayList<Integer>();
@@ -161,6 +165,7 @@ class TableWidget
         columnsToPrint = temp; 
     }
     
+    // Prints the current page number and total page count to the screen, in the format "Page X of Y". 
     public void displayPageNumber(color fillColor, color textColor)
     {
       String text = "Page "+(currentPage+1)+" of "+(maxPageNumber+1);

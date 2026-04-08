@@ -225,6 +225,7 @@ class MapScreen extends Screen
         text("= fewer / more flights", lx + 44, ly + 94);
     }
 
+    // Draws a label indicating the currently selected date
     private void _drawDateLabel()
     {
         int idx = dateDD.getSelectedIndex();

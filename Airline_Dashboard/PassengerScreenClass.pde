@@ -7,7 +7,6 @@ class PassengerScreen extends Screen {
     private final color BG_DARK     = #050912;
     private final color ACCENT_BLUE = #3B82F6;
     private final color TEXT_MAIN   = #F8FAFC;
-    private final color TEXT_MUTED  = #64748B;
 
     PassengerScreen(Table data) {
         this.data = data;

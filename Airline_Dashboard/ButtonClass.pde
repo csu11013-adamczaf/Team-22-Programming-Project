@@ -1,5 +1,4 @@
-final int BUTTON_PADDING = 10;
-
+// Button class to represent interactive buttons in the UI
 class Button
 {
   private float btnW = 80;
@@ -15,7 +14,8 @@ class Button
       this.btnX = btnX;
       this.btnY = btnY;
   }
-  
+
+  // Draw the button with the given text and colors
   public void printButton(String text, color fillColor, color textColor)
   {
     hoverButton();
@@ -33,9 +33,9 @@ class Button
     text(text, btnX + BUTTON_PADDING, btnY + 1.75 * BUTTON_PADDING);
   }
 
+  // Update the stroke color based on whether the mouse is hovering over the button
   public void hoverButton()
   {
-    // Highlight the border when the cursor is inside the button bounds
     if ((mouseX > btnX && mouseX < btnX + btnW) && (mouseY > btnY && mouseY < btnY + btnH))
     {
       strokeColour = Visuals.GLOBAL_STROKE_COLOUR_LIGHT;
@@ -46,9 +46,9 @@ class Button
     }
   }
 
+  // Check if the button is currently being pressed
   public boolean buttonPressed()
   {
-    // Check if the mouse is currently pressed and within the button bounds
     if (mouseX > btnX && mouseX < btnX + btnW && mouseY > btnY && mouseY < btnY + btnH && mousePressed)
     {
       return true;

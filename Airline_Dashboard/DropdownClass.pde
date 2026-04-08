@@ -1,10 +1,4 @@
-int dropDowncellHeight = 28;  // Mutable default; can be overridden per instance via setCellHeight()
-
-final int DROPDOWN_H          = 28;
-final int DROPDOWN_ITEM_H     = 26;
-final int DROPDOWN_PADDING_X  = 10;
-final int DROPDOWN_CHEVRON_W  = 20;
-final int DROPDOWN_MAX_ITEMS  = 17;  // Caps list height to avoid overflowing the screen
+// Dropdown class to represent interactive dropdown menus in the UI
 
 class Dropdown
 {
@@ -32,28 +26,33 @@ class Dropdown
         this.labels        = labels;
         this.columnIndices = columnIndices; // Passed-in font ignored; always loads from Visuals
     }
-
+    
+    // Returns the column index corresponding to the currently selected item, for querying the data table
     public int getSelectedIndex()
     {
-        return columnIndices[selectedItem];  // Returns column index, not position in the label array
+        return columnIndices[selectedItem];
     }
 
+    // Returns the label of the currently selected item, for display purposes
     public String getSelectedLabel()
     {
         return labels[selectedItem];
     }
-
+    
+    // Returns whether the dropdown is currently open, for managing interactions in the main mouseClicked handler
     public boolean isOpen()
     {
         return isOpen;
     }
 
+    // Changes the position of the dropdown
     public void setPosition(float x, float y)
     {
         this.ddX = x;
         this.ddY = y;
     }
 
+    // Prints the dropdown bar with the currently selected item and the chevron icon to the screen
     public void printDropdown()
     {
         boolean hoveringBar = _hoveringBar();
@@ -87,6 +86,7 @@ class Dropdown
         textAlign(LEFT, BASELINE);
     }
 
+    // Prints the dropdown list to the screen if the dropdown is currently open, with hover and selection highlights
     public void printList()
     {
         if (!isOpen) return;
@@ -134,6 +134,7 @@ class Dropdown
         textAlign(LEFT, BASELINE);
     }
 
+    // Handles mouse clicks to toggle the dropdown open/closed and update the selected item based on where the click landed
     public void mouseClicked()
     {
         if (_hoveringBar())
@@ -161,6 +162,7 @@ class Dropdown
         }
     }
 
+    // Setters for mutable properties
     public void setTextSize(int size)
     {
         this.textSize = size;
@@ -171,6 +173,7 @@ class Dropdown
         dropDowncellHeight = size;
     }
 
+    // Helper methods to determine whether the mouse is currently hovering over the dropdown bar or a given list item
     private boolean _hoveringBar()
     {
         return mouseX > ddX && mouseX < ddX + ddW && mouseY > ddY && mouseY < ddY + DROPDOWN_H;

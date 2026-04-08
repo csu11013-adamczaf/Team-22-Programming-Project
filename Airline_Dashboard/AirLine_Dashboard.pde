@@ -1,6 +1,20 @@
+// Main file for the Airline Dashboard application - Everything runs from here, mostly setup.
+
+//Global variables that can be accessed by all screens and components
+int dropDowncellHeight = 28;  // Mutable default; can be overridden per instance via setCellHeight()
+
+final int DROPDOWN_H          = 28;
+final int DROPDOWN_ITEM_H     = 26;
+final int DROPDOWN_PADDING_X  = 10;
+final int DROPDOWN_CHEVRON_W  = 20;
+final int DROPDOWN_MAX_ITEMS  = 17;  // Caps list height to avoid overflowing the screen
+
 final float BTN_W = 80;
 final float BTN_H = 30;
-final int   ROWS_TO_DISPLAY = 10;  
+final int BUTTON_PADDING = 10;
+final int   ROWS_TO_DISPLAY = 10;
+final String[] SCREEN_NAMES = {"Passengers", "Query", "Map"};
+
 
 TableWidget flights;
 Button prevButton;
@@ -12,8 +26,6 @@ MapScreen      mapScreen;
 PassengerScreen passengerScreen; // Add this near other screens
 Screen         currentScreen;
 int            currentScreenIdx = 0;
-
-final String[] SCREEN_NAMES = { "Passenger Mode", "Search", "Map" };
 PFont navFont;
 PFont navTitleFont;
 PFont mapFont;      // loaded once here, passed to MapScreen
@@ -28,6 +40,7 @@ PImage query_queryTick;
 
 Table mapData;
 
+//One-time setup of the application, runs once at the start
 void setup()
 {
     size(1920, 1080, P2D);
@@ -48,8 +61,8 @@ void setup()
     dropDown_DropDownFont = loadFont(Visuals.DROPDOWN_FONT);
     query_queryTick = loadImage(Visuals.QUERY_WHITE_TICK);
     
+    //Set up screens and components
     mapData = loadTable("flights2k.csv", "csv");
-
     flights = new TableWidget("flights2k.csv");
     flights.setXPos((width / 2) - flights.getTableWidth() / 2);
     prevButton = new Button(BTN_W, BTN_H, 0, 0);
@@ -63,6 +76,7 @@ void setup()
     currentScreen = passengerScreen;
 }
 
+//Main draw loop, runs every frame
 void draw()
 {
     background(Visuals.BACKGROUND);
@@ -70,6 +84,7 @@ void draw()
     _drawNavbar();
 }
 
+//Handle mouse clicks for both the navbar and the current screen
 void mousePressed()
 {
     int clicked = _navbarTabAt(mouseX, mouseY);
@@ -81,6 +96,7 @@ void mousePressed()
     currentScreen.mousePressed();
 }
 
+//Draw the navigation bar at the top of the screen, including the title and tabs
 void _drawNavbar()
 {
     int navH = Visuals.NAVBAR_H;
@@ -137,6 +153,7 @@ void _drawNavbar()
     strokeWeight(1);
 }
 
+//Determine if the mouse is currently hovering over a navbar tab, and return its index (or -1 if none)
 int _navbarTabAt(float mx, float my)
 {
     if (my < 0 || my > Visuals.NAVBAR_H) return -1;
@@ -149,6 +166,7 @@ int _navbarTabAt(float mx, float my)
     return -1;
 }
 
+//Switch the current screen to the one corresponding to the given index
 void _switchScreen(int idx)
 {
     currentScreenIdx = idx;

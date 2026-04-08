@@ -1,3 +1,5 @@
+// CheckBox class to represent interactive checkboxes in the UI
+
 public class CheckBox
 {
     float xPos;
@@ -18,6 +20,7 @@ public class CheckBox
         enabled = true;
     }
 
+    // Draw the checkbox and its label
     void draw()
     {
         stroke(0);
@@ -30,10 +33,10 @@ public class CheckBox
         {
             image(query_queryTick, xPos + 3.5, yPos + 3.5, width - 7.5, height - 7.5);
         }
-        // Position text to the right of the checkbox, with a 10px gap, and vertically aligned with the checkbox
         text(this.text, xPos + height + 10, (yPos + textAscent() + textDescent()));
     }
-
+    
+    // Handle mouse clicks to toggle the checkbox state
     void mouseClicked()
     {
         if ((mouseX > xPos && mouseX < xPos + width) && (mouseY > yPos && mouseY < yPos + height))

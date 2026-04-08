@@ -18,6 +18,7 @@ public class Query
         _initDropdowns();
     }
     
+    // Creates the dropdown for printing to the screen, based on the columns of the table
     private void _initDropdowns()
     {
         String[] queryLabels  = new String[COLS.length];
@@ -34,26 +35,6 @@ public class Query
 
         queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices);
 
-    }
-    
-    public boolean exists(String searchTerm, String[] data)
-    {
-        boolean isValuePresent = false;
-        for(int index = 0; index < data.length; index++)
-        {
-            if(searchTerm.equals(data[index]))
-            {
-                isValuePresent = true;
-            }
-        }
-        return isValuePresent;
-    }
-
-    // Checks whether a String occurs within a specified ArrayList
-    public boolean exists(String searchTerm, ArrayList<String> data)
-    {
-        String[] dataArray = data.toArray(new String[data.size()]);
-        return exists(searchTerm, dataArray);
     }
 
     // Takes in user input from he keyboard and returns it as a string
@@ -83,6 +64,7 @@ public class Query
         return userQuery;
     }
 
+        // Prints the query box and its contents to the screen, and updates the user query string based on keyboard input
         public void printQueryBox(float xPos, float yPos, Dropdown dropDown)
     {
         textFont(query_QueryFont);
@@ -104,6 +86,7 @@ public class Query
         rect(boxXPos+20+textWidth("Search for: "+ userQuery), yPos+8, 1,23);
     }
 
+    // Getter for the currently selected column index in the dropdown
       public int getSelectedColumn() {
         return queryDD.getSelectedIndex();
     }
