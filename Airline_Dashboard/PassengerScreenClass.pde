@@ -24,7 +24,8 @@ class PassengerScreen extends Screen {
 
         // 2. RIGHT PANEL: Live Schedule (Glassmorphism List)
         _drawFlightSchedule();
-
+        _drawCancelledTable();
+    _drawDivertedTable();
         // 3. BOTTOM: System Telemetry
         _drawTelemetryHUD();
     }
@@ -136,4 +137,115 @@ class PassengerScreen extends Screen {
             text(values[i], x, y + 80);
         }
     }
+
+private ArrayList<TableRow> getFirstFive(int columnIndex) {
+    ArrayList<TableRow> result = new ArrayList<>();
+
+    for (int i = 1; i < data.getRowCount(); i++) {
+        if (data.getString(i, columnIndex).equals("YES")) {
+            result.add(data.getRow(i));
+            if (result.size() == 5) break;
+        }
+    }
+    return result;
+}
+private void drawCompactFlightTable(
+    String title,
+    ArrayList<TableRow> rows,
+    float x, float y,
+    float w,
+    color accent
+) {
+    float rowH = 22;   // smaller rows
+    float headerH = 18;
+
+    // Title
+    fill(TEXT_MAIN);
+    textFont(titleFont);
+    textSize(14);
+    text(title, x, y - 8);
+
+    // Column headers (compact)
+    String[] headers = {
+    "Date", "Carrier", "Flt#", "Origin", "Org City",
+    "Dest", "Dst City", "Dep", "ActDep", "Arr", "ActArr"
+};
+
+float[] colW = {
+    70, 50, 45, 45, 90,
+    45, 90, 45, 45, 45, 45
+};
+    // Header row
+    fill(255, 20);
+    noStroke();
+    rect(x, y + 2, w, headerH, 6);
+
+    fill(TEXT_MUTED);
+    textFont(detailFont);
+    textSize(10);
+
+    float cx = x + 6;
+    float hy = y + headerH - 5;
+
+    for (int i = 0; i < headers.length; i++) {
+        text(headers[i], cx, hy);
+        cx += colW[i];
+    }
+
+    // Data rows
+    for (int r = 0; r < rows.size(); r++) {
+        TableRow row = rows.get(r);
+        float ry = y + headerH + r * rowH;
+
+        // Background
+        fill(255, 12);
+        stroke(accent, 40);
+        rect(x, ry, w, rowH - 1, 4);
+
+        // Text
+        fill(accent);
+        textFont(detailFont);
+        textSize(10);
+
+        cx = x + 6;
+float ty = ry + rowH * 0.7;
+
+text(row.getString(0),  cx, ty); cx += colW[0];   // Date
+text(row.getString(1),  cx, ty); cx += colW[1];   // Carrier
+text(row.getString(2),  cx, ty); cx += colW[2];   // Flight #
+text(row.getString(3),  cx, ty); cx += colW[3];   // Origin
+text(row.getString(4),  cx, ty); cx += colW[4];   // Origin City
+text(row.getString(6),  cx, ty); cx += colW[5];   // Dest
+text(row.getString(7),  cx, ty); cx += colW[6];   // Dest City
+text(row.getString(9),  cx, ty); cx += colW[7];   // CRS Dep
+text(row.getString(10), cx, ty); cx += colW[8];   // Act Dep
+text(row.getString(11), cx, ty); cx += colW[9];   // CRS Arr
+text(row.getString(12), cx, ty);                  // Act Arr
+    }
+}
+private void _drawCancelledTable() {
+    ArrayList<TableRow> rows = getFirstFive(15);
+
+    drawCompactFlightTable(
+        "CANCELLED FLIGHTS",
+        rows,
+        80,
+        Visuals.NAVBAR_H + 260,
+        600,
+        color(255, 80, 80)
+    );
+}
+
+private void _drawDivertedTable() {
+    ArrayList<TableRow> rows = getFirstFive(16);
+
+    drawCompactFlightTable(
+        "DIVERTED FLIGHTS",
+        rows,
+        80,
+        Visuals.NAVBAR_H + 260 + 150,
+        600,
+        color(245, 221, 39)
+    );
+}
 }
