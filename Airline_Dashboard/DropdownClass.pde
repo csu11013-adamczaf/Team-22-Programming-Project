@@ -1,10 +1,10 @@
-int dropDowncellHeight = 28;
+int dropDowncellHeight = 28;  // Mutable default; can be overridden per instance via setCellHeight()
 
-final int DROPDOWN_H = 28;
-final int DROPDOWN_ITEM_H = 26;
-final int DROPDOWN_PADDING_X = 10;
-final int DROPDOWN_CHEVRON_W = 20;
-final int DROPDOWN_MAX_ITEMS = 17;
+final int DROPDOWN_H          = 28;
+final int DROPDOWN_ITEM_H     = 26;
+final int DROPDOWN_PADDING_X  = 10;
+final int DROPDOWN_CHEVRON_W  = 20;
+final int DROPDOWN_MAX_ITEMS  = 17;  // Caps list height to avoid overflowing the screen
 
 class Dropdown
 {
@@ -14,30 +14,30 @@ class Dropdown
     private boolean isOpen = false;
     private int selectedItem = 0;
     private String[] labels;
-    private int[] columnIndices;
+    private int[] columnIndices;  // Maps each label to its column index in the data table
     private PFont ddFont;
-    private final color COL_BAR_BG = #2A3F5F;
+    private final color COL_BAR_BG       = #2A3F5F;
     private final color COL_BAR_BG_HOVER = #344E75;
-    private final color COL_LIST_BG = #1E2F47;
-    private final color COL_LIST_HOVER = #2A3F5F;
-    private final color COL_LIST_SEL = #4E79A7;
-    private final color COL_TEXT = #FFFFFF;
-    private final color COL_BORDER = #4A6080;
+    private final color COL_LIST_BG      = #1E2F47;
+    private final color COL_LIST_HOVER   = #2A3F5F;
+    private final color COL_LIST_SEL     = #4E79A7;
+    private final color COL_TEXT         = #FFFFFF;
+    private final color COL_BORDER       = #4A6080;
     private int textSize = 11;
 
     Dropdown(float x, float y, float w, String[] labels, int[] columnIndices, PFont ddFont)
     {
-        this.ddX = x;
-        this.ddY = y;
-        this.ddW = w;
-        this.labels = labels;
+        this.ddX           = x;
+        this.ddY           = y;
+        this.ddW           = w;
+        this.labels        = labels;
         this.columnIndices = columnIndices;
-        this.ddFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
+        this.ddFont        = loadFont(Visuals.BUTTON_BUTTON_FONT);  // Passed-in font ignored; always loads from Visuals
     }
 
     public int getSelectedIndex()
     {
-        return columnIndices[selectedItem];
+        return columnIndices[selectedItem];  // Returns column index, not position in the label array
     }
 
     public String getSelectedLabel()
@@ -56,13 +56,15 @@ class Dropdown
         this.ddY = y;
     }
 
-        public void printDropdown()
+    public void printDropdown()
     {
         boolean hoveringBar = _hoveringBar();
 
+        // Draw filled background first, then overlay the border as a separate no-fill rect
+        // to avoid the fill bleeding over the stroke
         noStroke();
         fill(hoveringBar ? COL_BAR_BG_HOVER : COL_BAR_BG);
-        rect(ddX, ddY, ddW,dropDowncellHeight, 4);
+        rect(ddX, ddY, ddW, dropDowncellHeight, 4);
 
         stroke(COL_BORDER);
         strokeWeight(1);
@@ -75,9 +77,11 @@ class Dropdown
         textSize(this.textSize);
         textAlign(LEFT, CENTER);
 
+        // Truncate label so it never overlaps the chevron
         String label = _truncate(labels[selectedItem], ddW - DROPDOWN_CHEVRON_W - 2 * DROPDOWN_PADDING_X);
         text(label, ddX + DROPDOWN_PADDING_X, ddY + dropDowncellHeight / 2.0);
 
+        // Chevron flips between ▼ (closed) and ▲ (open)
         fill(COL_TEXT);
         textAlign(CENTER, CENTER);
         text(isOpen ? "▲" : "▼", ddX + ddW - DROPDOWN_CHEVRON_W / 2.0, ddY + dropDowncellHeight / 2.0);
@@ -93,6 +97,7 @@ class Dropdown
         float listH = visibleCount * DROPDOWN_ITEM_H;
         float listY = ddY + dropDowncellHeight;
 
+        // Rounded corners only on the bottom two corners so the list reads as an extension of the bar
         stroke(COL_BORDER);
         strokeWeight(1);
         fill(COL_LIST_BG);
@@ -106,18 +111,20 @@ class Dropdown
         {
             float rowY = listY + i * DROPDOWN_ITEM_H;
             boolean hover = _hoveringListItem(i);
-            boolean sel = (i == selectedItem);
+            boolean sel   = (i == selectedItem);
 
+            // Priority: selected overrides hover, hover overrides default
             noStroke();
-            if (sel) fill(COL_LIST_SEL);
+            if      (sel)   fill(COL_LIST_SEL);
             else if (hover) fill(COL_LIST_HOVER);
-            else fill(COL_LIST_BG);
+            else            fill(COL_LIST_BG);
             rect(ddX, rowY, ddW, DROPDOWN_ITEM_H);
 
             fill(COL_TEXT);
             String label = _truncate(labels[i], ddW - 2 * DROPDOWN_PADDING_X);
             text(label, ddX + DROPDOWN_PADDING_X, rowY + DROPDOWN_ITEM_H / 2.0);
 
+            // Divider skipped after the last visible row to avoid a double-border with the list outline
             if (i < visibleCount - 1)
             {
                 stroke(COL_BORDER);
@@ -151,6 +158,7 @@ class Dropdown
                 }
             }
 
+            // Click landed in the list area but missed every row — close anyway
             isOpen = false;
         }
     }
@@ -159,6 +167,7 @@ class Dropdown
     {
         this.textSize = size;
     }
+
     public void setCellHeight(int size)
     {
         dropDowncellHeight = size;
@@ -178,6 +187,7 @@ class Dropdown
 
     private String _truncate(String s, float maxWidth)
     {
+        // 6px per character is a rough estimate for the small font size used
         int maxChars = (int)(maxWidth / 6);
         if (s.length() <= maxChars) return s;
         return s.substring(0, max(0, maxChars - 1)) + "…";
