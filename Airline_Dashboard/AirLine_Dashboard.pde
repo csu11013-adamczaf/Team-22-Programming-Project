@@ -10,48 +10,45 @@ Query query;
 
 QueryScreen    queryScreen;
 MapScreen      mapScreen;
-PassengerScreen passengerScreen;
-Screen         currentScreen;     // Polymorphic reference — holds whichever screen is active
+PassengerScreen passengerScreen; // Add this near other screens
+Screen         currentScreen;
 int            currentScreenIdx = 0;
 
 final String[] SCREEN_NAMES = { "Search", "Map", "Passenger Mode" };
 PFont navFont;
 PFont navTitleFont;
-PFont mapFont;        // Reuses the button font; passed into MapScreen to avoid reloading
-Table mapData;        // Raw CSV table passed directly to MapScreen (bypasses TableWidget)
+PFont mapFont;      // loaded once here, passed to MapScreen
+Table mapData;
 
 void setup()
 {
     size(1920, 1080, P2D);
-    surface.setLocation(-1, -1);  // Place window at top-left corner of display
+    surface.setLocation(-1, -1);
     background(Visuals.BACKGROUND);
 
     navFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);
     navTitleFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
-    mapFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);
-    mapData      = loadTable("flights2k.csv", "csv");
+    mapFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);   // reuse button font for map labels
+    mapData = loadTable("flights2k.csv", "csv");
 
     flights = new TableWidget("flights2k.csv");
-    // Centre the table horizontally
     flights.setXPos((width / 2) - flights.getTableWidth() / 2);
     prevButton = new Button(btnW, btnH, 0, 0);
     nextButton = new Button(btnW, btnH, 0, 0);
     graphs = new Graphs(flights.getData(), ROWS_TO_DISPLAY);
     query  = new Query(flights.getData());
 
-    overviewScreen  = new OverviewScreen(graphs, flights, prevButton, nextButton, ROWS_TO_DISPLAY);
-    queryScreen     = new QueryScreen();
+    queryScreen    = new QueryScreen();
     passengerScreen = new PassengerScreen(flights.getData());
-    mapScreen       = new MapScreen(mapData, mapFont, navTitleFont);
+    mapScreen = new MapScreen(mapData, mapFont, navTitleFont);
 
-    currentScreen = overviewScreen;  // Start on the Overview tab
+    currentScreen = queryScreen;
 }
 
 void draw()
 {
     background(Visuals.BACKGROUND);
     currentScreen.draw();
-    // Navbar drawn last so it always renders on top of screen content
     _drawNavbar();
 }
 
@@ -61,7 +58,7 @@ void mousePressed()
     if (clicked >= 0)
     {
         _switchScreen(clicked);
-        return;  // Don't also forward the click to the current screen
+        return;
     }
     currentScreen.mousePressed();
 }
@@ -76,9 +73,8 @@ void _drawNavbar()
 
     stroke(Visuals.NAVBAR_BORDER);
     strokeWeight(1);
-    line(0, navH, width, navH);  // Bottom border line separating navbar from screen content
+    line(0, navH, width, navH);
 
-    // Accent dot to the left of the app title
     noStroke();
     fill(Visuals.ACCENT);
     ellipse(28, navH / 2.0, 8, 8);
@@ -89,7 +85,7 @@ void _drawNavbar()
     textAlign(LEFT, CENTER);
     text("Airline Dashboard", 42, navH / 2.0);
 
-    float tabStartX = 320;  // Tabs begin after the title region
+    float tabStartX = 320;
     textFont(navFont);
     textSize(13);
 
@@ -99,7 +95,6 @@ void _drawNavbar()
         boolean active = (i == currentScreenIdx);
         boolean hover  = (_navbarTabAt(mouseX, mouseY) == i);
 
-        // Highlight background only on hover, not when already active
         if (hover && !active)
         {
             noStroke();
@@ -111,7 +106,6 @@ void _drawNavbar()
         textAlign(CENTER, CENTER);
         text(SCREEN_NAMES[i], tx + Visuals.TAB_W / 2.0, navH / 2.0);
 
-        // Underline indicator at the bottom of the navbar for the active tab
         if (active)
         {
             noStroke();
@@ -121,14 +115,12 @@ void _drawNavbar()
         }
     }
 
-    // Reset alignment and stroke so other drawing code isn't affected
     textAlign(LEFT, BASELINE);
     strokeWeight(1);
 }
 
 int _navbarTabAt(float mx, float my)
 {
-    // Return -1 if the cursor is outside the navbar strip entirely
     if (my < 0 || my > Visuals.NAVBAR_H) return -1;
     float tabStartX = 320;
     for (int i = 0; i < SCREEN_NAMES.length; i++)
@@ -136,7 +128,7 @@ int _navbarTabAt(float mx, float my)
         float tx = tabStartX + i * Visuals.TAB_W;
         if (mx >= tx && mx < tx + Visuals.TAB_W) return i;
     }
-    return -1;  // Click was in the navbar but not over any tab
+    return -1;
 }
 
 void _switchScreen(int idx)
@@ -144,10 +136,9 @@ void _switchScreen(int idx)
     currentScreenIdx = idx;
     switch (idx)
     {
-        case 0:  currentScreen = overviewScreen;  break;
-        case 1:  currentScreen = queryScreen;     break;
-        case 2:  currentScreen = mapScreen;       break;
-        case 3:  currentScreen = passengerScreen; break;
-        default: currentScreen = overviewScreen;  // Fallback — should never be reached
+        case 0:  currentScreen = queryScreen;    break;
+        case 1:  currentScreen = mapScreen;      break;
+        case 2: currentScreen = passengerScreen; break;
+        default: currentScreen = queryScreen;
     }
 }
