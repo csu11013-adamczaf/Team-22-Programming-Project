@@ -1,51 +1,82 @@
-float btnW = 80;
-float btnH = 30;
-int   ROWS_TO_DISPLAY = 10;
+// Main file for the Airline Dashboard application - Everything runs from here, mostly setup.
+
+//Global variables that can be accessed by all screens and components
+int dropDowncellHeight = 28;  // Mutable default; can be overridden per instance via setCellHeight()
+
+final int DROPDOWN_H          = 28;
+final int DROPDOWN_ITEM_H     = 26;
+final int DROPDOWN_PADDING_X  = 10;
+final int DROPDOWN_CHEVRON_W  = 20;
+final int DROPDOWN_MAX_ITEMS  = 17;  // Caps list height to avoid overflowing the screen
+
+final float BTN_W = 80;
+final float BTN_H = 30;
+final int BUTTON_PADDING = 10;
+final int   ROWS_TO_DISPLAY = 10;
+final String[] SCREEN_NAMES = {"Passengers", "Query", "Map"};
+
 
 TableWidget flights;
 Button prevButton;
 Button nextButton;
-Graphs graphs;
 Query query;
 
-OverviewScreen overviewScreen;
-QueryScreen queryScreen;
-MapScreen mapScreen;
-//DelaysScreen delaysScreen;
-Screen currentScreen;
-int currentScreenIdx = 0;
-
-//final String[] SCREEN_NAMES  = { "Overview", "Routes", "Airlines", "Delays" };
-final String[] SCREEN_NAMES  = { "Overview", "Query", "Map" };
+QueryScreen    queryScreen;
+MapScreen      mapScreen;
+PassengerScreen passengerScreen; // Add this near other screens
+Screen         currentScreen;
+int            currentScreenIdx = 0;
 PFont navFont;
 PFont navTitleFont;
+PFont mapFont;      // loaded once here, passed to MapScreen
+PFont table_TableFont;
+PFont table_TableHeaderFont;
+PFont button_ButtonFont;
+PFont query_QueryFont;
+PFont query_QueryFontLarge;
+PFont passenger_PassengerHeaderFont;
+PFont dropDown_DropDownFont;
+PImage query_queryTick;
 
+Table mapData;
+
+//One-time setup of the application, runs once at the start
 void setup()
 {
     size(1920, 1080, P2D);
     surface.setLocation(-1, -1);
     background(Visuals.BACKGROUND);
-
-    navFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
-    navTitleFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
-
+    frameRate(30);
+    
+    //Load Fonts & Images only once
+    navFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);
+    navTitleFont = loadFont(Visuals.PASSENGER_HEADER_FONT);
+    mapFont      = loadFont(Visuals.DROPDOWN_FONT);   // reuse button font for map labels
+    table_TableFont = loadFont(Visuals.TABLEWIDGET_TABLE_FONT);
+    table_TableHeaderFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
+    button_ButtonFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
+    query_QueryFont = loadFont(Visuals.QUERY_SEARCH_FONT);
+    query_QueryFontLarge = loadFont(Visuals.QUERY_SEARCH_FONT_LARGE);
+    passenger_PassengerHeaderFont = loadFont(Visuals.PASSENGER_HEADER_FONT);
+    dropDown_DropDownFont = loadFont(Visuals.DROPDOWN_FONT);
+    query_queryTick = loadImage(Visuals.QUERY_WHITE_TICK);
+    
+    //Set up screens and components
+    mapData = loadTable("flights2k.csv", "csv");
     flights = new TableWidget("flights2k.csv");
     flights.setXPos((width / 2) - flights.getTableWidth() / 2);
-    prevButton = new Button(btnW, btnH, 0, 0);
-    nextButton = new Button(btnW, btnH, 0, 0);
-    graphs = new Graphs(flights.getData(), ROWS_TO_DISPLAY);
-    query = new Query(flights.getData());
+    prevButton = new Button(BTN_W, BTN_H, 0, 0);
+    nextButton = new Button(BTN_W, BTN_H, 0, 0);
+    query  = new Query(flights.getData());
 
-
-    overviewScreen = new OverviewScreen(graphs, flights, prevButton, nextButton, ROWS_TO_DISPLAY);
     queryScreen = new QueryScreen();
-    mapScreen  = new MapScreen();
-    
-    //delaysScreen    = new DelaysScreen();
+    passengerScreen = new PassengerScreen(flights.getData());
+    mapScreen = new MapScreen(mapData, mapFont, navTitleFont);
 
-    currentScreen = overviewScreen;
+    currentScreen = passengerScreen;
 }
 
+//Main draw loop, runs every frame
 void draw()
 {
     background(Visuals.BACKGROUND);
@@ -53,6 +84,7 @@ void draw()
     _drawNavbar();
 }
 
+//Handle mouse clicks for both the navbar and the current screen
 void mousePressed()
 {
     int clicked = _navbarTabAt(mouseX, mouseY);
@@ -61,10 +93,10 @@ void mousePressed()
         _switchScreen(clicked);
         return;
     }
-
     currentScreen.mousePressed();
 }
 
+//Draw the navigation bar at the top of the screen, including the title and tabs
 void _drawNavbar()
 {
     int navH = Visuals.NAVBAR_H;
@@ -77,27 +109,23 @@ void _drawNavbar()
     strokeWeight(1);
     line(0, navH, width, navH);
 
-    fill(Visuals.NAVBAR_TITLE_COLOUR);
-    textFont(navTitleFont);
-    textSize(Visuals.NAVBAR_TITLE_SIZE);
-    textAlign(LEFT, CENTER);
-
     noStroke();
     fill(Visuals.ACCENT);
     ellipse(28, navH / 2.0, 8, 8);
 
     fill(Visuals.NAVBAR_TITLE_COLOUR);
+    textFont(navTitleFont);
+    textSize(Visuals.NAVBAR_TITLE_SIZE);
+    textAlign(LEFT, CENTER);
     text("Airline Dashboard", 42, navH / 2.0);
 
-
     float tabStartX = 320;
-
     textFont(navFont);
     textSize(13);
 
     for (int i = 0; i < SCREEN_NAMES.length; i++)
     {
-        float tx = tabStartX + i * Visuals.TAB_W;
+        float   tx     = tabStartX + i * Visuals.TAB_W;
         boolean active = (i == currentScreenIdx);
         boolean hover  = (_navbarTabAt(mouseX, mouseY) == i);
 
@@ -125,6 +153,7 @@ void _drawNavbar()
     strokeWeight(1);
 }
 
+//Determine if the mouse is currently hovering over a navbar tab, and return its index (or -1 if none)
 int _navbarTabAt(float mx, float my)
 {
     if (my < 0 || my > Visuals.NAVBAR_H) return -1;
@@ -137,15 +166,15 @@ int _navbarTabAt(float mx, float my)
     return -1;
 }
 
+//Switch the current screen to the one corresponding to the given index
 void _switchScreen(int idx)
 {
     currentScreenIdx = idx;
     switch (idx)
     {
-        case 0:  currentScreen = overviewScreen;  break;
-        case 1:  currentScreen = queryScreen;    break;
-        case 2:  currentScreen = mapScreen;  break;
-        //case 3:  currentScreen = delaysScreen;    break;
-        default: currentScreen = overviewScreen;
+        case 0:  currentScreen = passengerScreen;    break;
+        case 1:  currentScreen = queryScreen;        break;
+        case 2: currentScreen = mapScreen;           break;
+        default: currentScreen = passengerScreen;
     }
 }

@@ -8,6 +8,10 @@ public class Visuals
 
     // ── Global background ─────────────────────────────────────────────────────
     public static final int  BACKGROUND            = #0B1120;   // deep navy page bg
+    
+    // ── Images ────────────────────────────────────────────────────────────────
+
+    public static final String QUERY_WHITE_TICK = "Query/white-tick.png";
 
     // ── Navbar ────────────────────────────────────────────────────────────────
     public static final int  NAVBAR_BG             = #0D1526;   // slightly lighter than bg
@@ -50,7 +54,7 @@ public class Visuals
     public static final int  SPACE_BETWEEN_BUTTONS = 10;
 
     // ── Accent ────────────────────────────────────────────────────────────────
-    public static final int  ACCENT                = #3B82F6;   // primary blue accent
+    public static final int  ACCENT                = #103f8b;   // primary blue accent
     public static final int  ACCENT_GLOW           = 0x223B82F6; // translucent for fills
 
     // ── Text ──────────────────────────────────────────────────────────────────
@@ -64,9 +68,7 @@ public class Visuals
     public static final String TABLEWIDGET_HEADER_FONT = "TableWidget/header-font.vlw";
     public static final String BUTTON_BUTTON_FONT      = "Button/button-font.vlw";
     public static final String QUERY_SEARCH_FONT       = "Query/search-font.vlw";
-
-    // ── Legacy constants kept for backward compatibility ──────────────────────
-    public static final int  BUTTON_BUTTON_COLOUR      = #1E3A5F;
-    public static final int  GRAPHS_BACKGROUND_COLOUR  = #111D33;
-    public static final String GRAPHS_FONT             = "Graphs/graphs-font-18.vlw";
+    public static final String QUERY_SEARCH_FONT_LARGE = "Query/search-font-large.vlw";
+    public static final String PASSENGER_HEADER_FONT   = "Passenger/passenger-headerfont.vlw";
+    public static final String DROPDOWN_FONT           = "DropDown/dropdown-font.vlw";
 }
