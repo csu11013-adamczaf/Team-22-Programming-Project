@@ -23,7 +23,7 @@ public class CheckBox
         stroke(0);
         fill(currentColour);
         rect(xPos, yPos, width, height, 5);  // 5px corner radius
-        textFont(loadFont(Visuals.QUERY_SEARCH_FONT));
+        textFont(query_QueryFont);
         fill(0);
         textSize(20);
         // Position text to the right of the checkbox, with a 10px gap, and vertically aligned with the checkbox

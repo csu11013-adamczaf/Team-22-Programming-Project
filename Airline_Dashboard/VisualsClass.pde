@@ -64,6 +64,8 @@ public class Visuals
     public static final String TABLEWIDGET_HEADER_FONT = "TableWidget/header-font.vlw";
     public static final String BUTTON_BUTTON_FONT      = "Button/button-font.vlw";
     public static final String QUERY_SEARCH_FONT       = "Query/search-font.vlw";
+    public static final String PASSENGER_HEADER_FONT   = "Passenger/passenger-headerfont.vlw";
+    public static final String DROPDOWN_FONT           = "DropDown/dropdown-font.vlw";
 
     // ── Legacy constants kept for backward compatibility ──────────────────────
     public static final int  BUTTON_BUTTON_COLOUR      = #1E3A5F;

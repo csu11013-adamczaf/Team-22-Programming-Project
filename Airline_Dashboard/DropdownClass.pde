@@ -15,7 +15,6 @@ class Dropdown
     private int selectedItem = 0;
     private String[] labels;
     private int[] columnIndices;  // Maps each label to its column index in the data table
-    private PFont ddFont;
     private final color COL_BAR_BG       = #2A3F5F;
     private final color COL_BAR_BG_HOVER = #344E75;
     private final color COL_LIST_BG      = #1E2F47;
@@ -25,14 +24,13 @@ class Dropdown
     private final color COL_BORDER       = #4A6080;
     private int textSize = 11;
 
-    Dropdown(float x, float y, float w, String[] labels, int[] columnIndices, PFont ddFont)
+    Dropdown(float x, float y, float w, String[] labels, int[] columnIndices)
     {
         this.ddX           = x;
         this.ddY           = y;
         this.ddW           = w;
         this.labels        = labels;
-        this.columnIndices = columnIndices;
-        this.ddFont        = loadFont(Visuals.BUTTON_BUTTON_FONT);  // Passed-in font ignored; always loads from Visuals
+        this.columnIndices = columnIndices; // Passed-in font ignored; always loads from Visuals
     }
 
     public int getSelectedIndex()
@@ -73,7 +71,7 @@ class Dropdown
 
         noStroke();
         fill(COL_TEXT);
-        textFont(ddFont);
+        textFont(dropDown_DropDownFont);
         textSize(this.textSize);
         textAlign(LEFT, CENTER);
 
@@ -103,7 +101,7 @@ class Dropdown
         fill(COL_LIST_BG);
         rect(ddX, listY, ddW, listH, 0, 0, 4, 4);
 
-        textFont(ddFont);
+        textFont(dropDown_DropDownFont);
         textSize(this.textSize);
         textAlign(LEFT, CENTER);
 

@@ -17,7 +17,6 @@ final int GRAPH_TITLE_SIZE   = 15;
 final int GRAPH_DROPDOWN_W   = 200;
 final int GRAPH_DROPDOWN_GAP = 8;
 final int GRAPH_POINT_PAD    = 30;
-PFont GRAPH_FONT;
 
 final int GRAPH_PANEL_Y = Visuals.NAVBAR_H +8;
 
@@ -29,8 +28,6 @@ final int[] NUMERICAL_COLS   = { 6, 10, 11, 12, 13, 14, 17 };
 class Graphs
 {
     private Table data;
-    private PFont graphFont;
-    private PFont titleFont;
     private int   numberOfRows;
     public int graphHeightOffset;
 
@@ -44,9 +41,6 @@ class Graphs
     {
         this.data         = data;
         this.numberOfRows = numberOfRows;
-        this.graphFont    = loadFont(Visuals.TABLEWIDGET_TABLE_FONT);
-        this.titleFont    = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
-        GRAPH_FONT = loadFont(Visuals.BUTTON_BUTTON_FONT);
         _initDropdowns();
     }
 
@@ -68,11 +62,11 @@ class Graphs
             numLabels[i]  = data.getString(0, NUMERICAL_COLS[i]);
         }
 
-        pieCategoryDD  = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices, GRAPH_FONT);
-        lineCategoryDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices, GRAPH_FONT);
-        lineValueDD    = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices, GRAPH_FONT);
-        barCategoryDD  = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices, GRAPH_FONT);
-        barValueDD     = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices, GRAPH_FONT);
+        pieCategoryDD  = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices);
+        lineCategoryDD = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices);
+        lineValueDD    = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices);
+        barCategoryDD  = new Dropdown(0, 0, GRAPH_DROPDOWN_W, catLabels, catIndices);
+        barValueDD     = new Dropdown(0, 0, GRAPH_DROPDOWN_W, numLabels, numIndices);
     }
 
     private float tableTopY()
@@ -148,7 +142,7 @@ class Graphs
             {
                 float mid = startAngle + sweepAngle / 2.0;
                 fill(Visuals.GLOBAL_TEXT_COLOUR_LIGHT);
-                textFont(graphFont);
+                textFont(table_TableFont);
                 textSize(GRAPH_LABEL_SIZE - 1);
                 textAlign(CENTER, CENTER);
                 text(nf(fraction * 100, 1, 0) + "%",
@@ -237,7 +231,7 @@ class Graphs
         float plotH  = plotY2 - plotY1;
 
         // Gridlines + y labels
-        textFont(graphFont);
+        textFont(table_TableFont);
         textSize(GRAPH_LABEL_SIZE - 2);
         textAlign(RIGHT, CENTER);
         for (int t = 0; t <= 5; t++)
@@ -280,7 +274,7 @@ class Graphs
 
             // Value label above bar
             fill(Visuals.CHART_VALUE_LABEL);
-            textFont(graphFont);
+            textFont(table_TableFont);
             textSize(GRAPH_LABEL_SIZE - 2);
             textAlign(CENTER, BOTTOM);
             text(nf(yValues[i], 1, 1), bx + barW / 2.0, by - 3);
@@ -344,7 +338,7 @@ class Graphs
         if (sums.size() < 2)
         {
             fill(Visuals.CHART_LABEL);
-            textFont(graphFont);
+            textFont(table_TableFont);
             textSize(GRAPH_LABEL_SIZE);
             textAlign(CENTER, CENTER);
             text("Not enough data for selected columns.",
@@ -376,7 +370,7 @@ class Graphs
         float xStep  = (categories.length > 1) ? drawW / (categories.length - 1) : drawW;
 
         // Gridlines + y labels
-        textFont(graphFont);
+        textFont(table_TableFont);
         textSize(GRAPH_LABEL_SIZE - 2);
         textAlign(RIGHT, CENTER);
         for (int t = 0; t <= 5; t++)
@@ -406,7 +400,7 @@ class Graphs
             line(px, plotY2, px, plotY2 + 5);
             noStroke();
             fill(Visuals.CHART_LABEL);
-            textFont(graphFont);
+            textFont(table_TableFont);
             textSize(GRAPH_LABEL_SIZE - 2);
             textAlign(RIGHT, CENTER);
             pushMatrix();
@@ -462,7 +456,7 @@ class Graphs
 
             // Value label
             fill(Visuals.CHART_VALUE_LABEL);
-            textFont(graphFont);
+            textFont(table_TableFont);
             textSize(GRAPH_LABEL_SIZE - 2);
             textAlign(CENTER, BOTTOM);
             text(nf(yValues[i], 1, 1), px, py - 8);
@@ -470,7 +464,7 @@ class Graphs
 
         // Y-axis label rotated
         fill(Visuals.CHART_LABEL);
-        textFont(graphFont);
+        textFont(table_TableFont);
         textSize(GRAPH_LABEL_SIZE - 1);
         textAlign(CENTER, CENTER);
         pushMatrix();
@@ -529,7 +523,7 @@ class Graphs
     private void _drawTitle(String title, float panelX, float panelY, float panelW)
     {
         fill(Visuals.PANEL_TITLE_COLOUR);
-        textFont(titleFont);
+        textFont(passenger_PassengerHeaderFont);
         textSize(GRAPH_TITLE_SIZE);
         textAlign(CENTER, CENTER);
         text(title, panelX + panelW / 2.0,
@@ -543,7 +537,7 @@ class Graphs
         float swatchSize = 10;
         float rowGap     = 20;
 
-        textFont(graphFont);
+        textFont(table_TableFont);
         textSize(GRAPH_LABEL_SIZE - 2);
         textAlign(LEFT, CENTER);
 

@@ -6,7 +6,6 @@ class Button
   private float btnH = 30;
   private float btnX = 0;
   private float btnY = 0;
-  private PFont buttonFont;
   private int strokeColour = 0;  // Changes between light/dark depending on hover state
 
   Button(float btnW, float btnH, float btnX, float btnY)
@@ -15,7 +14,6 @@ class Button
       this.btnH = btnH; 
       this.btnX = btnX;
       this.btnY = btnY;
-      this.buttonFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
   }
   
   public void printButton(String text, color fillColor, color textColor)
@@ -30,7 +28,7 @@ class Button
     rect(btnX, btnY, btnW, btnH, 5);  // 5px corner radius
 
     fill(textColor);
-    textFont(buttonFont);
+    textFont(button_ButtonFont);
     // Horizontal: padded from left edge. Vertical: 1.75× padding approximates centre
     text(text, btnX + BUTTON_PADDING, btnY + 1.75 * BUTTON_PADDING);
   }

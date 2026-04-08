@@ -22,7 +22,7 @@ class QueryScreen extends Screen
     {
         String[] queryLabels = {"Flight Date", "Carrier", "Flight Number", "Origin", "Origin City", "Origin State", "Origin WAC", "Destination", "Destination City", "Destination State", "Destination WAC", "CRS_DEP_TIME", "Departure Time", "CRS_ARR_TIME", "Arrival Time", "Cancelled", "Diverted", "Distance"};
         int[] queryIndices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
-        queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices, loadFont(Visuals.QUERY_SEARCH_FONT));
+        queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices);
         queryFlights = new TableWidget(Visuals.DATA);
         queryFlights.setXPos((width / 2) - queryFlights.getTableWidth() / 2);
         divertedBox = new CheckBox(query.boxXPos, query.boxYPos+41, "Show Diverted?");
@@ -38,7 +38,7 @@ class QueryScreen extends Screen
         if (!(query.userQuery).equals(lastQuery) || (lastIndex != queryDD.getSelectedIndex()) 
             || lastDivertedValue != divertedBox.enabled || lastCancelledValue != cancelledBox.enabled) 
         {
-            Table filtered = filterFlights(query.userQuery, divertedBox, cancelledBox);
+            Table filtered = filterFlights(query.userQuery, queryDD.getSelectedIndex());
             queryFlights = new TableWidget(filtered, ((width / 2) - flights.getTableWidth() / 2));
             lastQuery = query.userQuery;
             lastIndex = queryDD.getSelectedIndex();
@@ -51,13 +51,13 @@ class QueryScreen extends Screen
         prevButton.printButton("Previous Page", Visuals.BTN_BG, Visuals.BTN_TEXT);
         nextButton.printButton("Next Page", Visuals.BTN_BG, Visuals.BTN_TEXT);
         queryFlights.displayPageNumber(Visuals.BTN_BG, Visuals.BTN_TEXT);
-        queryFlights.printWidget(ROWS_TO_DISPLAY, prevButton, nextButton);
+        queryFlights.printWidget(ROWS_TO_DISPLAY, prevButton, nextButton, false);
 
         // If no matches, inform user
         if(queryFlights.flightData.getRowCount()==1)
         {
             queryFlights.currentPage = 0;
-            textFont(loadFont(Visuals.QUERY_SEARCH_FONT));
+            textFont(query_QueryFont);
             textSize(40);
             fill(#ffffff);
             String emptyTable = "No records match the search criteria";
@@ -92,7 +92,7 @@ class QueryScreen extends Screen
 
     }
 
-    Table filterFlights(String sentence, CheckBox diverted, CheckBox cancelled)
+    Table filterFlights(String sentence, int columnIndex)
     {
         Table all = flights.getData();
         Table filtered = new Table();
@@ -108,19 +108,17 @@ class QueryScreen extends Screen
             header.setString(c, all.getString(0, c));
         }
 
-        int col = queryDD.getSelectedIndex();
-
         for (int r = 1; r < all.getRowCount(); r++) 
         {
 
-        String cell = all.getString(r, col);
+        String cell = all.getString(r, columnIndex);
 
             if (cell.toLowerCase().contains(sentence.toLowerCase())) 
             {
                 //Check if boxes are enabled and filter results if not
-                if(diverted.enabled || ((all.getString(r, 16).equals("NO") && !diverted.enabled)))
+                if(divertedBox.enabled || ((all.getString(r, 16).equals("NO") && !divertedBox.enabled)))
                 {
-                    if(cancelled.enabled || ((all.getString(r, 15).equals("NO") && !cancelled.enabled)))
+                    if(cancelledBox.enabled || ((all.getString(r, 15).equals("NO") && !cancelledBox.enabled)))
                     {
                         TableRow newRow = filtered.addRow();
                         for (int c = 0; c < all.getColumnCount(); c++) 

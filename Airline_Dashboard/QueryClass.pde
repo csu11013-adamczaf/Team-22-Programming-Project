@@ -32,7 +32,7 @@ public class Query
             queryLabels[i]  = data.getString(0, COLS[i]);
         }
 
-        queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices, GRAPH_FONT);
+        queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices);
 
     }
     
@@ -85,7 +85,7 @@ public class Query
 
         public void printQueryBox(float xPos, float yPos, Dropdown dropDown)
     {
-        textFont(loadFont(Visuals.QUERY_SEARCH_FONT));
+        textFont(query_QueryFont);
         String searchbyString = "Search through: ";
         float widgetWidth = textBoxWidth+60+dropDown.ddW+textWidth(searchbyString);
         boxXPos=xPos-((widgetWidth)/2);
@@ -106,4 +106,7 @@ public class Query
       public int getSelectedColumn() {
         return queryDD.getSelectedIndex();
     }
+
+    
+
 }

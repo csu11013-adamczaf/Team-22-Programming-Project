@@ -71,7 +71,11 @@ class MapScreen extends Screen
         _drawDateLabel();
 
         // Dropdown on top
-        dateDD.setPosition(mapX + 20, mapY + 16);
+        textFont(passenger_PassengerHeaderFont);
+        textSize(18);
+        fill(0);
+        text("Date of flight:", mapX+40, mapY+37);
+        dateDD.setPosition(mapX + 20, mapY + 50);
         dateDD.printDropdown();
         dateDD.printList();
     }
@@ -319,7 +323,7 @@ class MapScreen extends Screen
             labels[i] = d.contains(" ") ? d.substring(0, d.indexOf(" ")) : d;
         }
 
-        dateDD = new Dropdown(mapX + 20, mapY + 16, 160, labels, indices, mapFont);
+        dateDD = new Dropdown(mapX + 20, mapY + 16, 160, labels, indices);
         dateDD.setTextSize(12);
         dateDD.setCellHeight(32);
     }

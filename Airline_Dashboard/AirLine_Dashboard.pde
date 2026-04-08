@@ -1,11 +1,10 @@
-float btnW = 80;
-float btnH = 30;
-int   ROWS_TO_DISPLAY = 10;  
+final float BTN_W = 80;
+final float BTN_H = 30;
+final int   ROWS_TO_DISPLAY = 10;  
 
 TableWidget flights;
 Button prevButton;
 Button nextButton;
-Graphs graphs;
 Query query;
 
 QueryScreen    queryScreen;
@@ -18,6 +17,13 @@ final String[] SCREEN_NAMES = { "Search", "Map", "Passenger Mode" };
 PFont navFont;
 PFont navTitleFont;
 PFont mapFont;      // loaded once here, passed to MapScreen
+PFont table_TableFont;
+PFont table_TableHeaderFont;
+PFont button_ButtonFont;
+PFont query_QueryFont;
+PFont passenger_PassengerHeaderFont;
+PFont dropDown_DropDownFont;
+
 Table mapData;
 
 void setup()
@@ -25,20 +31,29 @@ void setup()
     size(1920, 1080, P2D);
     surface.setLocation(-1, -1);
     background(Visuals.BACKGROUND);
-
+    frameRate(30);
+    
+    //Load Fonts only once
     navFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);
-    navTitleFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
-    mapFont      = loadFont(Visuals.BUTTON_BUTTON_FONT);   // reuse button font for map labels
+    navTitleFont = loadFont(Visuals.PASSENGER_HEADER_FONT);
+    mapFont      = loadFont(Visuals.DROPDOWN_FONT);   // reuse button font for map labels
+    table_TableFont = loadFont(Visuals.TABLEWIDGET_TABLE_FONT);
+    table_TableHeaderFont = loadFont(Visuals.TABLEWIDGET_HEADER_FONT);
+    button_ButtonFont = loadFont(Visuals.BUTTON_BUTTON_FONT);
+    query_QueryFont = loadFont(Visuals.QUERY_SEARCH_FONT);
+    passenger_PassengerHeaderFont = loadFont(Visuals.PASSENGER_HEADER_FONT);
+    dropDown_DropDownFont = loadFont(Visuals.DROPDOWN_FONT);
+    
+    
     mapData = loadTable("flights2k.csv", "csv");
 
     flights = new TableWidget("flights2k.csv");
     flights.setXPos((width / 2) - flights.getTableWidth() / 2);
-    prevButton = new Button(btnW, btnH, 0, 0);
-    nextButton = new Button(btnW, btnH, 0, 0);
-    graphs = new Graphs(flights.getData(), ROWS_TO_DISPLAY);
+    prevButton = new Button(BTN_W, BTN_H, 0, 0);
+    nextButton = new Button(BTN_W, BTN_H, 0, 0);
     query  = new Query(flights.getData());
 
-    queryScreen    = new QueryScreen();
+    queryScreen = new QueryScreen();
     passengerScreen = new PassengerScreen(flights.getData());
     mapScreen = new MapScreen(mapData, mapFont, navTitleFont);
 
