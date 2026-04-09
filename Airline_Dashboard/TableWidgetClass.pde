@@ -59,7 +59,7 @@ class TableWidget
         setColumnsToPrint(temp);
         updateTableWidth();
     }
-
+    //Alternate constructor for constructing with pre-loaded Table object - Used in queries. Skips data cleaning process since data is already cleaned when query is made
     TableWidget(Table table, float xPos)
     {
         this.xPos = xPos;
@@ -69,7 +69,7 @@ class TableWidget
         updateTableWidth();
     }
 
-        // Accessor methods for private variables;
+    // Accessor methods for private variables;
     public int getMaxPage()
     {
         return maxPageNumber;
@@ -168,7 +168,7 @@ class TableWidget
     // Prints the current page number and total page count to the screen, in the format "Page X of Y". 
     public void displayPageNumber(color fillColor, color textColor)
     {
-      String text = "Page "+(currentPage+1)+" of "+(maxPageNumber+1);
+      String text = "Page "+(currentPage+1)+" of "+(maxPageNumber <= 0 ? 1 : (maxPageNumber+1));
       int textLength = text.length() * 5;
       float dispW = textLength + 2 * BUTTON_PADDING;
       float dispH = 30;
