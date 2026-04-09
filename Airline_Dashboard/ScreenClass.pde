@@ -93,7 +93,7 @@ class QueryScreen extends Screen
 
     }
     // Filters the flights table based on the user's query string, selected column, and checkbox states for diverted/cancelled
-    Table filterFlights(String sentence, int columnIndex)
+    public Table filterFlights(String sentence, int columnIndex)
     {
         Table all = flights.getData();
         Table filtered = new Table();
@@ -135,7 +135,7 @@ class QueryScreen extends Screen
     }
 
     // Handle mouse clicks for the checkboxes, dropdown, and buttons
-    void mousePressed()
+    public void mousePressed()
     {
         filteredGraphs.mouseClicked();
         divertedBox.mouseClicked();

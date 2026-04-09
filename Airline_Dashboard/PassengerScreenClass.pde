@@ -1,7 +1,7 @@
 class PassengerScreen extends Screen {
     private Table data;
-    TableWidget divertedTable;
-    TableWidget cancelledTable;
+    private TableWidget divertedTable;
+    private TableWidget cancelledTable;
     
     // Aesthetic Palette sampled from your reference and Visuals.pde
     private final color BG_DARK     = #050912;

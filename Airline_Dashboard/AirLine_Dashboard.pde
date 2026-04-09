@@ -38,8 +38,6 @@ PFont passenger_PassengerHeaderFont;
 PFont dropDown_DropDownFont;
 PImage query_queryTick;
 
-Table mapData;
-
 //One-time setup of the application, runs once at the start
 void setup()
 {
@@ -62,7 +60,6 @@ void setup()
     query_queryTick = loadImage(Visuals.QUERY_WHITE_TICK);
     
     //Set up screens and components
-    mapData = loadTable("flights2k.csv", "csv");
     flights = new TableWidget("flights2k.csv");
     flights.setXPos((width / 2) - flights.getTableWidth() / 2);
     prevButton = new Button(BTN_W, BTN_H, 0, 0);
@@ -71,7 +68,7 @@ void setup()
 
     queryScreen = new QueryScreen();
     passengerScreen = new PassengerScreen(flights.getData());
-    mapScreen = new MapScreen(mapData, mapFont, navTitleFont);
+    mapScreen = new MapScreen(flights.flightData, mapFont, navTitleFont);
 
     currentScreen = passengerScreen;
 }

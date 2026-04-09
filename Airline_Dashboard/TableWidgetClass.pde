@@ -59,7 +59,7 @@ class TableWidget
         setColumnsToPrint(temp);
         updateTableWidth();
     }
-
+    // Alternate constructor for creating a table widget with a pre-loaded Table object, e.g. for query results. This skips the data cleaning steps in the first constructor, as the data is already cleaned when the query is made.
     TableWidget(Table table, float xPos)
     {
         this.xPos = xPos;

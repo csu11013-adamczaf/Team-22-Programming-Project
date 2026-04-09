@@ -21,7 +21,7 @@ public class CheckBox
     }
 
     // Draw the checkbox and its label
-    void draw()
+    public void draw()
     {
         stroke(0);
         fill(currentColour);
@@ -37,7 +37,7 @@ public class CheckBox
     }
     
     // Handle mouse clicks to toggle the checkbox state
-    void mouseClicked()
+    public void mouseClicked()
     {
         if ((mouseX > xPos && mouseX < xPos + width) && (mouseY > yPos && mouseY < yPos + height))
         {

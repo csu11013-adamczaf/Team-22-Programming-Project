@@ -64,7 +64,7 @@ public class Query
         return userQuery;
     }
 
-        // Prints the query box and its contents to the screen, and updates the user query string based on keyboard input
+        // Prints the query box and its contents to the screen.
         public void printQueryBox(float xPos, float yPos, Dropdown dropDown)
     {
         textFont(query_QueryFont);
