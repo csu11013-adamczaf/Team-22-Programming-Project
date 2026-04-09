@@ -60,7 +60,7 @@ void setup()
     query_queryTick = loadImage(Visuals.QUERY_WHITE_TICK);
     
     //Set up screens and components
-    flights = new TableWidget("flights2k.csv");
+    flights = new TableWidget(Visuals.DATA);
     flights.setXPos((width / 2) - flights.getTableWidth() / 2);
     prevButton = new Button(BTN_W, BTN_H, 0, 0);
     nextButton = new Button(BTN_W, BTN_H, 0, 0);

@@ -1,6 +1,6 @@
-class Screen
+abstract class Screen
 {
-    public void draw() {}
+    public abstract void draw();
     public void mousePressed() {}
 }
 
@@ -40,7 +40,7 @@ class QueryScreen extends Screen
             || lastDivertedValue != divertedBox.enabled || lastCancelledValue != cancelledBox.enabled) 
         {
             Table filtered = filterFlights(query.userQuery, queryDD.getSelectedIndex());
-            queryFlights = new TableWidget(filtered, ((width / 2) - flights.getTableWidth() / 2));
+            queryFlights.setData(filtered);
             lastQuery = query.userQuery;
             lastIndex = queryDD.getSelectedIndex();
             lastDivertedValue = divertedBox.enabled;
