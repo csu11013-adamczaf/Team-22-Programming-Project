@@ -37,7 +37,7 @@ class MapScreen extends Screen
         this.labelFont = labelFont;
         
         // Load the map image provided
-        this.mapImage  = loadImage("Map.png");
+        this.mapImage  = loadImage(Visuals.MAP_MAP_IMAGE);
 
         _buildAirportCoords();
         _buildDateDropdown();

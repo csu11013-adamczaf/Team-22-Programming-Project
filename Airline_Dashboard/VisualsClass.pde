@@ -12,6 +12,7 @@ public class Visuals
     // ── Images ────────────────────────────────────────────────────────────────
 
     public static final String QUERY_WHITE_TICK = "Query/white-tick.png";
+    public static final String MAP_MAP_IMAGE = "Query/red-cross.png";
 
     // ── Navbar ────────────────────────────────────────────────────────────────
     public static final int  NAVBAR_BG             = #0D1526;   // slightly lighter than bg
