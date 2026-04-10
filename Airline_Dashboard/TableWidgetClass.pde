@@ -18,7 +18,6 @@ class TableWidget
     private int currentPage = 0;
     private float yPos = 0;
     private int maxPageNumber;
-    private int numberOfFlightsToDisplay;
     private Table flightData;
     private float tableWidth;
     private float tableHeight;
@@ -110,8 +109,7 @@ class TableWidget
     // Methods for traversing between pages
     public void nextPage()
     {
-        int lastPage = _lastPage();
-        if (currentPage < lastPage)
+        if (currentPage < maxPageNumber)
             currentPage++;
         else
             currentPage = 0;
@@ -122,12 +120,12 @@ class TableWidget
         if (currentPage > 0)
             currentPage--;
         else
-            currentPage = _lastPage();
+            currentPage = maxPageNumber;
     }
 
     public void setCurrentPage(int newPage)
     {
-        if (newPage >= 0 && newPage <= _lastPage())
+        if (newPage >= 0 && newPage <= maxPageNumber)
             currentPage = newPage;
     }
 
@@ -169,7 +167,7 @@ class TableWidget
     // Prints the current page number and total page count to the screen, in the format "Page X of Y". 
     public void displayPageNumber(color fillColor, color textColor)
     {
-      String text = "Page "+(currentPage+1)+" of "+(maxPageNumber+1);
+      String text = "Page "+(currentPage+1)+" of "+(maxPageNumber <=0 ? 1 : maxPageNumber+1);
       int textLength = text.length() * 5;
       float dispW = textLength + 2 * BUTTON_PADDING;
       float dispH = 30;
@@ -194,8 +192,7 @@ class TableWidget
     // Sets table height and number of pages based on number of flights to be displayed.
     public void printWidget(int numberOfFlightsToDisplay, boolean overrideY)
     {
-        this.numberOfFlightsToDisplay = numberOfFlightsToDisplay;
-        maxPageNumber = (flightData.getRowCount() / numberOfFlightsToDisplay) - 1;
+        maxPageNumber = ((flightData.getRowCount()-1) / numberOfFlightsToDisplay);
         tableHeight = (numberOfFlightsToDisplay * ROW_HEIGHT) + HEADER_HEIGHT;
         if(!overrideY)
         {
@@ -219,13 +216,6 @@ class TableWidget
         prevButton.btnX = this.xPos;
         nextButton.btnX = this.xPos + prevButton.btnW + Visuals.SPACE_BETWEEN_BUTTONS;
         nextButton.btnY = this.yPos - BTN_H - Visuals.SPACE_BETWEEN_BUTTONS;
-    }
-
-    // Returns the true last page index, accounting for a partial final page.
-    private int _lastPage()
-    {
-        boolean hasPartialPage = (flightData.getRowCount() - 1) % numberOfFlightsToDisplay != 0 && (flightData.getRowCount() - 1) > numberOfFlightsToDisplay * (maxPageNumber + 1);
-        return hasPartialPage ? maxPageNumber + 1 : maxPageNumber;
     }
 
     // Prints the header of the table to the screen

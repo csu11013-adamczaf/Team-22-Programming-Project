@@ -11,6 +11,8 @@ Team Members:
 # Description
 A comprehensive data visualization and management tool built with Processing for analyzing and exploring airline flight data.
 This application provides multiple perspectives on flight information through interactive charts, a live map, and detailed query tools.
+
+Comprehensive documentation on classes/functions can be found under the 'wiki' tab of this repository or click [here](https://github.com/csu11013-adamczaf/Team-22-Programming-Project/wiki/)
 #
 
 # Screens

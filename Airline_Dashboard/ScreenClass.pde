@@ -15,12 +15,13 @@ class QueryScreen extends Screen
     private CheckBox divertedBox;
     private CheckBox cancelledBox;
     private Graphs filteredGraphs;
+    private Table lowerCaseCache;
 
     
 
     QueryScreen()
     {
-        // Initialize the dropdown, table widget, checkboxes, and graphs for the query screen
+        // Initialize the dropdown, table widget, checkboxes, and graphs for the query screen, build lower case cache for efficient filtering.
         String[] queryLabels = {"Flight Date", "Carrier", "Flight Number", "Origin", "Origin City", "Origin State", "Origin WAC", "Destination", "Destination City", "Destination State", "Destination WAC", "CRS_DEP_TIME", "Departure Time", "CRS_ARR_TIME", "Arrival Time", "Cancelled", "Diverted", "Distance"};
         int[] queryIndices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
         queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices);
@@ -28,7 +29,17 @@ class QueryScreen extends Screen
         divertedBox = new CheckBox(query.boxXPos, query.boxYPos+41, "Show Diverted?");
         cancelledBox = new CheckBox(query.boxXPos, query.boxYPos+41, "Show Cancelled?");
         filteredGraphs = new Graphs(queryFlights.getData(), ROWS_TO_DISPLAY);
+        lowerCaseCache = new Table();
         filteredGraphs.graphHeightOffset = 100;
+
+        for(int row = 1; row < flights.getData().getRowCount(); row++)
+        {
+            TableRow currentRow = flights.getData().getRow(row);
+            for(int col = 0; col < flights.getData().getColumnCount(); col++)
+            {
+                lowerCaseCache.setString(row, col, currentRow.getString(col).toLowerCase());
+            }
+        }
     }
 
     public void draw()
@@ -96,6 +107,9 @@ class QueryScreen extends Screen
     {
         Table all = flights.getData();
         Table filtered = new Table();
+        String lowerCaseSentence = sentence.toLowerCase();
+        String cell = null;
+
 
         // copy column titles
         for (int c = 0; c < all.getColumnCount(); c++) 
@@ -111,9 +125,9 @@ class QueryScreen extends Screen
         for (int r = 1; r < all.getRowCount(); r++) 
         {
 
-        String cell = all.getString(r, columnIndex);
+        cell = lowerCaseCache.getString(r, columnIndex);
 
-            if (cell.toLowerCase().contains(sentence.toLowerCase())) 
+            if (cell.contains(lowerCaseSentence)) 
             {
                 //Check if boxes are enabled and filter results if not
                 if(divertedBox.enabled || ((all.getString(r, 16).equals("NO") && !divertedBox.enabled)))
@@ -143,12 +157,6 @@ class QueryScreen extends Screen
 
         if (nextButton.buttonPressed()) queryFlights.nextPage();
 
-        if (prevButton.buttonPressed())
-        {
-            if (queryFlights.getCurrentPage() > 0)
-                queryFlights.previousPage();
-            else
-                queryFlights.setCurrentPage(flights.getMaxPage());
-        }
+        if (prevButton.buttonPressed()) queryFlights.previousPage();
     }
 }
