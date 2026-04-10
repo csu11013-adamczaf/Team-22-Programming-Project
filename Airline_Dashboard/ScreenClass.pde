@@ -24,8 +24,7 @@ class QueryScreen extends Screen
         String[] queryLabels = {"Flight Date", "Carrier", "Flight Number", "Origin", "Origin City", "Origin State", "Origin WAC", "Destination", "Destination City", "Destination State", "Destination WAC", "CRS_DEP_TIME", "Departure Time", "CRS_ARR_TIME", "Arrival Time", "Cancelled", "Diverted", "Distance"};
         int[] queryIndices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
         queryDD = new Dropdown(20, 50, 210, queryLabels, queryIndices);
-        queryFlights = new TableWidget(Visuals.DATA);
-        queryFlights.setXPos((width / 2) - queryFlights.getTableWidth() / 2);
+        queryFlights = new TableWidget(flights.getData(), ((width / 2) - flights.getTableWidth() / 2));
         divertedBox = new CheckBox(query.boxXPos, query.boxYPos+41, "Show Diverted?");
         cancelledBox = new CheckBox(query.boxXPos, query.boxYPos+41, "Show Cancelled?");
         filteredGraphs = new Graphs(queryFlights.getData(), ROWS_TO_DISPLAY);

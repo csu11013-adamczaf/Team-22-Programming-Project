@@ -36,11 +36,27 @@ class Graphs
     private Dropdown lineValueDD;
     private Dropdown barCategoryDD;
     private Dropdown barValueDD;
+    private int lastPieCategoryIdx = -2;
+    private int lastBarCategoryIdx = -2;
+    private int lastLineCategoryIdx = -2;
+    private int lastBarValueIdx = -2;
+    private int lastLineValueIdx = -2;
+    private java.util.LinkedHashMap<String, Integer> pieChartCounts;
+    private java.util.LinkedHashMap<String, Integer> barChartCounts;
+    private java.util.LinkedHashMap<String, Float> barChartSums;
+    private java.util.LinkedHashMap<String, Integer> lineChartCounts;
+    private java.util.LinkedHashMap<String, Float> lineChartSums;
+    
 
     Graphs(Table data, int numberOfRows)
     {
         this.data         = data;
         this.numberOfRows = numberOfRows;
+        pieChartCounts = new java.util.LinkedHashMap<String, Integer>();
+        barChartCounts = new java.util.LinkedHashMap<String, Integer>();
+        barChartSums = new java.util.LinkedHashMap<String, Float>();
+        lineChartCounts = new java.util.LinkedHashMap<String, Integer>();
+        lineChartSums = new java.util.LinkedHashMap<String, Float>();
         _initDropdowns();
     }
 
@@ -89,19 +105,22 @@ class Graphs
         String title          = "Flights by " + pieCategoryDD.getSelectedLabel();
 
         // LinkedHashMap preserves encounter order so legend is stable
-        java.util.LinkedHashMap<String, Integer> counts =
-            new java.util.LinkedHashMap<String, Integer>();
-
-        for (int row = 1; row < data.getRowCount(); row++)
+        if(lastPieCategoryIdx != categoryColumn)
         {
-            String val = data.getString(row, categoryColumn);
-            if (val == null || val.trim().equals("")) continue;
-            counts.put(val, counts.containsKey(val) ? counts.get(val) + 1 : 1);
+            pieChartCounts = new java.util.LinkedHashMap<String, Integer>();
+            lastPieCategoryIdx = categoryColumn;
+
+            for (int row = 1; row < data.getRowCount(); row++)
+            {
+                String val = data.getString(row, categoryColumn);
+                if (val == null || val.trim().equals("")) continue;
+                pieChartCounts.put(val, pieChartCounts.containsKey(val) ? pieChartCounts.get(val) + 1 : 1);
+            }
         }
 
-        String[] categories = counts.keySet().toArray(new String[0]);
+        String[] categories = pieChartCounts.keySet().toArray(new String[0]);
         int total = 0;
-        for (String k : categories) total += counts.get(k);
+        for (String k : categories) total += pieChartCounts.get(k);
         if (total == 0) return;
 
         float panelX = 0;
@@ -132,7 +151,7 @@ class Graphs
 
         for (int i = 0; i < categories.length; i++)
         {
-            float fraction   = (float) counts.get(categories[i]) / total;
+            float fraction   = (float) pieChartCounts.get(categories[i]) / total;
             float sweepAngle = fraction * TWO_PI;
 
             fill(GRAPH_PALETTE[i % GRAPH_PALETTE.length]);
@@ -160,7 +179,7 @@ class Graphs
         strokeWeight(1);
 
         // Legend
-        _drawPieLegend(categories, counts, total,
+        _drawPieLegend(categories, pieChartCounts, total,
                        panelX + panelW - legendW - GRAPH_MARGIN / 2.0,
                        chartY + GRAPH_MARGIN);
 
@@ -178,10 +197,12 @@ class Graphs
         String title          = "Avg " + barValueDD.getSelectedLabel()
                               + " by " + barCategoryDD.getSelectedLabel();
 
-        java.util.LinkedHashMap<String, Float>   sums =
-            new java.util.LinkedHashMap<String, Float>();
-        java.util.LinkedHashMap<String, Integer> cnt  =
-            new java.util.LinkedHashMap<String, Integer>();
+        if(lastBarCategoryIdx != categoryColumn || lastBarValueIdx != valueColumn)
+        {
+            barChartSums = new java.util.LinkedHashMap<String, Float>();
+            barChartCounts = new java.util.LinkedHashMap<String, Integer>();
+            lastBarCategoryIdx = categoryColumn;
+            lastBarValueIdx = valueColumn;
 
         for (int row = 1; row < data.getRowCount(); row++)
         {
@@ -190,8 +211,9 @@ class Graphs
             float numVal;
             try   { numVal = Float.parseFloat(data.getString(row, valueColumn)); }
             catch (NumberFormatException e) { continue; }
-            sums.put(catVal, sums.containsKey(catVal) ? sums.get(catVal) + numVal : numVal);
-            cnt.put(catVal,  cnt.containsKey(catVal)  ? cnt.get(catVal)  + 1      : 1);
+            barChartSums.put(catVal, barChartSums.containsKey(catVal) ? barChartSums.get(catVal) + numVal : numVal);
+            barChartCounts.put(catVal,  barChartCounts.containsKey(catVal)  ? barChartCounts.get(catVal)  + 1      : 1);
+        }
         }
 
         float panelW = width / 3.0;
@@ -210,14 +232,14 @@ class Graphs
         barCategoryDD.printDropdown();
         barValueDD.printDropdown();
 
-        if (sums.size() < 1) return;
+        if (barChartSums.size() < 1) return;
 
-        String[] categories = sums.keySet().toArray(new String[0]);
+        String[] categories = barChartSums.keySet().toArray(new String[0]);
         float[]  yValues    = new float[categories.length];
         float    yMax       = 0;
         for (int i = 0; i < categories.length; i++)
         {
-            yValues[i] = sums.get(categories[i]) / cnt.get(categories[i]);
+            yValues[i] = barChartSums.get(categories[i]) / barChartCounts.get(categories[i]);
             yMax = max(yMax, yValues[i]);
         }
         yMax  *= 1.15;
@@ -303,10 +325,12 @@ class Graphs
         String title          = "Avg " + lineValueDD.getSelectedLabel()
                               + " by " + lineCategoryDD.getSelectedLabel();
 
-        java.util.LinkedHashMap<String, Float>   sums =
-            new java.util.LinkedHashMap<String, Float>();
-        java.util.LinkedHashMap<String, Integer> cnt  =
-            new java.util.LinkedHashMap<String, Integer>();
+        if(lastLineCategoryIdx != categoryColumn || lastLineValueIdx != valueColumn)
+        {
+            lineChartSums = new java.util.LinkedHashMap<String, Float>();
+            lineChartCounts = new java.util.LinkedHashMap<String, Integer>();
+            lastLineCategoryIdx = categoryColumn;
+            lastLineValueIdx = valueColumn;
 
         for (int row = 1; row < data.getRowCount(); row++)
         {
@@ -315,8 +339,9 @@ class Graphs
             float numVal;
             try   { numVal = Float.parseFloat(data.getString(row, valueColumn)); }
             catch (NumberFormatException e) { continue; }
-            sums.put(catVal, sums.containsKey(catVal) ? sums.get(catVal) + numVal : numVal);
-            cnt.put(catVal,  cnt.containsKey(catVal)  ? cnt.get(catVal)  + 1      : 1);
+            lineChartSums.put(catVal, lineChartSums.containsKey(catVal) ? lineChartSums.get(catVal) + numVal : numVal);
+            lineChartCounts.put(catVal, lineChartCounts.containsKey(catVal) ? lineChartCounts.get(catVal) + 1 : 1);
+        }
         }
 
         float panelX = (width / 3.0) * 2;
@@ -335,7 +360,7 @@ class Graphs
         lineCategoryDD.printDropdown();
         lineValueDD.printDropdown();
 
-        if (sums.size() < 2)
+        if (lineChartSums.size() < 2)
         {
             fill(Visuals.CHART_LABEL);
             textFont(table_TableFont);
@@ -347,10 +372,10 @@ class Graphs
             return;
         }
 
-        String[] categories = sums.keySet().toArray(new String[0]);
+        String[] categories = lineChartSums.keySet().toArray(new String[0]);
         float[]  yValues    = new float[categories.length];
         for (int i = 0; i < categories.length; i++)
-            yValues[i] = sums.get(categories[i]) / cnt.get(categories[i]);
+            yValues[i] = lineChartSums.get(categories[i]) / lineChartCounts.get(categories[i]);
 
         float yMin = yValues[0], yMax = yValues[0];
         for (float v : yValues) { yMin = min(yMin, v); yMax = max(yMax, v); }
@@ -476,9 +501,15 @@ class Graphs
         textAlign(LEFT, BASELINE);
     }
 
+
     public void updateData(Table newData)
     {
         this.data = newData;
+        lastPieCategoryIdx = -2;
+        lastBarCategoryIdx = -2;
+        lastLineCategoryIdx = -2;
+        lastBarValueIdx = -2;
+        lastLineValueIdx = -2;
     }
 
 

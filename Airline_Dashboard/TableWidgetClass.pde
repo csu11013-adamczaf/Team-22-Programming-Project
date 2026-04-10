@@ -23,6 +23,7 @@ class TableWidget
     private float tableWidth;
     private float tableHeight;
     private ArrayList<Integer> columnsToPrint = new ArrayList<>();
+    private int[] columnWidths = {110, 50, 80, 60, 130, 80, 70, 80, 130, 100, 90, 90, 90, 90, 70, 65, 65, 65};
 
     // Creates a table widget object with parameters, sets up required fonts.
     // For columns 15 and 16, changes the boolean value "0" and "1" to "YES" and "NO" for a more polished look
@@ -144,7 +145,7 @@ class TableWidget
     public void updateTableWidth()
     {  
         int maxColumn = columnsToPrint.get(columnsToPrint.size()-1);
-        tableWidth = getColumnOffset(maxColumn+((maxColumn == 18) ? 0 : 1));
+        tableWidth = getColumnOffset(maxColumn) + (maxColumn == columnsToPrint.size()-1 ? 0 : 50);
     }
 
     // Setter for the flight data. Used to update the table when a query is made, without needing to create a new TableWidget object.
@@ -281,40 +282,15 @@ class TableWidget
         }
     }
 
-   // Returns the width of each column 
-    private int getColumnWidth(int column)
-    {
-        switch (column)
-        {
-            case 0:  return 110;
-            case 1:  return 50;
-            case 2:  return 80;
-            case 3:  return 60;
-            case 4:  return 130;
-            case 5:  return 80;
-            case 6:  return 70;
-            case 7:  return 80;
-            case 8:  return 130;
-            case 9:  return 100;
-            case 10: return 90;
-            case 11: return 90;
-            case 12: return 90;
-            case 13: return 90;
-            case 14: return 70;
-            case 15: return 65;
-            default: return 50;
-        }
-    }
-
    // Returns sum of widths of preceding columns to be used as an offset.
     private int getColumnOffset(int column)
     {
         int offset = 0;
-        for (int index = 0; index < column; index++)
+        for (int index = 0; index < columnWidths.length && index < column; index++)
         {
             if(columnsToPrint.contains(index))
             {
-            offset += getColumnWidth(index);
+                offset += columnWidths[index];
             }
         }
         return offset;

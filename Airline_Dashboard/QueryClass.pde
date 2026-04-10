@@ -37,7 +37,7 @@ public class Query
 
     }
 
-    // Takes in user input from he keyboard and returns it as a string
+    // Takes in user input from the keyboard and returns it as a string
     private String getUserQueryString()
     {
         fill(0);
